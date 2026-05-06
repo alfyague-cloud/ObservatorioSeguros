@@ -1,0 +1,12 @@
+Observatorio Seguros
+Copyright 2025 [Pon aquí el titular del copyright]
+
+This product includes software developed by the contributors of this project.
+
+This product includes data published by the Dirección General de Seguros y
+Fondos de Pensiones (DGSFP) — Libro de Balances y Cuentas. The DGSFP data
+is publicly available and is included in this repository under data/raw/
+for reproducibility.
+
+This product uses Chart.js (https://www.chartjs.org/), licensed under the
+MIT License.

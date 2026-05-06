@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RATIO · Observatorio del seguro español</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --bg-2: #eaeff8;
+    --bg-3: #ffffff;
+    --ink: #0a1f3d;
+    --ink-soft: #2c3e5e;
+    --ink-mute: #74849f;
+    --rule: #d8dfeb;
+    --rule-soft: #e8edf5;
+    --primary: #0a2a52;
+    --primary-2: #103e7a;
+    --primary-soft: #dde8f6;
+    --accent: #0891b2;        /* cyan/teal saturated */
+    --accent-2: #0ea5b7;
+    --accent-soft: #cdf0f5;
+    --gold: #d97706;
+    --gold-soft: #fef3c7;
+    --pos: #047857;
+    --pos-soft: #d1fae5;
+    --neg: #be123c;
+    --neg-soft: #ffe4e6;
+    --warn: #b45309;
+    --paper: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(10,31,61,0.05);
+    --shadow: 0 1px 3px rgba(10,31,61,0.06), 0 4px 12px rgba(10,31,61,0.06);
+    --shadow-strong: 0 4px 20px rgba(10,31,61,0.12), 0 16px 40px rgba(10,31,61,0.10);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  .num, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .serif { font-family: 'Fraunces', 'Instrument Serif', Georgia, serif; }
+  .italic-display { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; }
+
+  /* ---------- LAYOUT ---------- */
+  .app { display: grid; grid-template-columns: 340px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  aside {
+    background: var(--paper);
+    border-right: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+    height: 100vh; position: sticky; top: 0;
+  }
+  .brand {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--rule);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafd 100%);
+  }
+  .brand .logo-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .brand .afi-logo {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
+  .brand .afi-text {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .brand .divider {
+    width: 1px; height: 22px; background: var(--rule);
+  }
+  .brand .product {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .brand .tag {
+    margin-top: 2px;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .selected-bar {
+    padding: 12px 18px 8px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-2);
+  }
+  .selected-bar h4 {
+    margin: 0 0 8px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; min-height: 24px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 8px 4px 10px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+    max-width: 100%;
+  }
+  .pill .pill-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .pill .x {
+    cursor: pointer;
+    width: 14px; height: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    font-size: 9px; line-height: 1;
+  }
+  .pill .x:hover { background: var(--accent); }
+  .pill.empty { background: transparent; color: var(--ink-mute); padding-left: 0; font-style: italic; font-size: 12px; }
+
+  .search-box {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-box input:focus { border-color: var(--ink); }
+
+  .ent-list {
+    flex: 1; overflow-y: auto;
+    padding: 4px 0 8px;
+  }
+  .ent-list::-webkit-scrollbar { width: 6px; }
+  .ent-list::-webkit-scrollbar-thumb { background: var(--rule); }
+  .ent-row {
+    padding: 8px 18px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    display: flex; flex-direction: column; gap: 2px;
+    transition: background 0.1s;
+  }
+  .ent-row:hover { background: var(--bg-2); }
+  .ent-row.active { background: var(--bg-2); border-left-color: var(--accent); }
+  .ent-row .name { font-size: 12.5px; font-weight: 500; line-height: 1.25; }
+  .ent-row .meta { font-size: 10.5px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  .ent-row .meta .clave { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--ink-soft); }
+
+  .footer-aux {
+    padding: 12px 18px;
+    border-top: 1px solid var(--rule);
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    background: var(--bg-2);
+  }
+  .footer-aux b { color: var(--ink-soft); }
+
+  /* ---------- AGREGADOS ---------- */
+  .agg-section {
+    padding: 12px 18px 12px;
+    border-bottom: 1px solid var(--rule);
+    background: linear-gradient(180deg, var(--paper) 0%, #f8fafd 100%);
+  }
+  .agg-section h4 {
+    margin: 0 0 8px;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .agg-section h4 .hint-mini { font-size: 9px; letter-spacing: 0.04em; text-transform: none; color: var(--ink-mute); font-weight: 500; font-style: italic; }
+  .agg-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  }
+  .agg-chip {
+    display: flex; flex-direction: column; align-items: flex-start;
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .agg-chip:hover { border-color: var(--gold); background: var(--gold-soft); }
+  .agg-chip.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+    box-shadow: 0 2px 6px rgba(217,119,6,0.35);
+  }
+  .agg-chip .agg-name {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .agg-chip.active .agg-name { color: white; }
+  .agg-chip .agg-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+  }
+  .agg-chip.active .agg-count { color: rgba(255,255,255,0.85); }
+  .agg-chip .agg-sigma {
+    position: absolute;
+    top: 6px; right: 8px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .agg-chip.active .agg-sigma { color: white; opacity: 0.9; }
+
+  /* Pill especial para agregados en la barra "comparando" */
+  .pill.aggregate {
+    background: var(--gold) !important;
+  }
+  .pill .sigma {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 13px;
+    margin-right: 1px;
+  }
+
+  /* MAIN */
+  main {
+    padding: 0;
+    background: var(--bg);
+    overflow-x: hidden;
+  }
+  .topbar {
+    padding: 18px 32px 14px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px;
+  }
+  .headline {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+  .headline .accent { font-style: italic; color: var(--accent); }
+  .headline-sub {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+  }
+
+  .year-control {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .year-control label {
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 600;
+  }
+  .year-pill-group {
+    display: inline-flex;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+  .year-pill-group button {
+    background: transparent; border: 0;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-right: 1px solid var(--rule);
+  }
+  .year-pill-group button:last-child { border-right: 0; }
+  .year-pill-group button.active { background: var(--ink); color: var(--paper); }
+  .year-pill-group button:hover:not(.active) { background: var(--bg-2); }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .tab {
+    padding: 12px 20px 10px;
+    background: transparent; border: 0;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 600;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+
+  .content { padding: 28px 32px 60px; }
+
+  .empty-state {
+    padding: 80px 32px;
+    text-align: center;
+    color: var(--ink-mute);
+  }
+  .empty-state .big {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 38px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .empty-state .small { font-size: 13px; }
+
+  /* ---------- HERO SUMMARY BAND ---------- */
+  .hero-band {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 60%, #1a4d8f 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .hero-band::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% -20%, rgba(8,145,178,0.4), transparent 50%);
+    pointer-events: none;
+  }
+  .hero-band::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(8,145,178,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-band .hero-head {
+    position: relative; z-index: 1;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding-bottom: 12px; margin-bottom: 18px;
+    gap: 16px;
+  }
+  .hero-band .hero-head h2 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .hero-band .hero-head h2 .accent {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    color: var(--accent-2);
+    font-weight: 400;
+  }
+  .hero-band .hero-head .meta {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    font-weight: 600;
+  }
+  .hero-stats {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 4px;
+  }
+  .hero-stat {
+    padding: 8px 0;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    padding-left: 18px;
+  }
+  .hero-stat:first-child { border-left: 0; padding-left: 0; }
+  .hero-stat .label {
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .hero-stat .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .hero-stat .value .unit { font-size: 13px; color: rgba(255,255,255,0.7); margin-left: 3px; font-weight: 500; }
+  .hero-stat .sub { margin-top: 4px; font-size: 11px; color: rgba(255,255,255,0.6); }
+
+  /* ---------- SPARKLINE ---------- */
+  .sparkline { display: inline-block; vertical-align: middle; }
+  .sparkline path { fill: none; stroke-width: 1.5; }
+  .sparkline circle { stroke: white; stroke-width: 1.2; }
+
+  /* ---------- DELTA ---------- */
+  .delta {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; font-weight: 600;
+    padding: 1px 5px; border-radius: 3px;
+    margin-left: 6px;
+    letter-spacing: -0.02em;
+  }
+  .delta.pos { color: var(--pos); background: var(--pos-soft); }
+  .delta.neg { color: var(--neg); background: var(--neg-soft); }
+  .delta.flat { color: var(--ink-mute); background: var(--bg-2); }
+  .delta .arrow { font-size: 9px; }
+
+  /* override company-card row to fit sparkline */
+  .kpi-row .value-wrap {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  }
+  .kpi-row .top-line { display: flex; align-items: baseline; }
+  .kpi-row .sparkwrap { line-height: 0; opacity: 0.85; }
+
+  /* ---------- RESUMEN GRID ---------- */
+  .companies-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  }
+  .company-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 20px;
+    position: relative;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .company-card:hover { box-shadow: var(--shadow-strong); transform: translateY(-2px); }
+  .company-card .head {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .company-card .head .clave-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--paper);
+    background: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .company-card .head h3 {
+    margin: 8px 0 0;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .company-card .head .sub {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+  .kpi-list { display: flex; flex-direction: column; gap: 0; }
+  .kpi-row {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .kpi-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .kpi-row .label {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  .kpi-row .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .kpi-row .value.pos { color: var(--pos); }
+  .kpi-row .value.neg { color: var(--neg); }
+  .kpi-row .value.muted { color: var(--ink-mute); font-weight: 400; }
+
+  /* ---------- TABLES ---------- */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    font-size: 12.5px;
+  }
+  .data-table th, .data-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+  }
+  .data-table th {
+    background: var(--bg-2);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary);
+  }
+  .data-table td.num, .data-table th.num {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table tr:hover td { background: rgba(0,163,163,0.04); }
+  .data-table .label-cell { max-width: 380px; line-height: 1.3; }
+  .data-table .label-cell.indent-1 { padding-left: 24px; color: var(--ink-soft); }
+  .data-table .label-cell.indent-2 { padding-left: 36px; color: var(--ink-soft); font-size: 12px; }
+  .data-table tr.total td {
+    border-top: 2px solid var(--primary);
+    border-bottom: 3px double var(--primary);
+    font-weight: 700;
+    background: var(--primary-soft);
+    color: var(--ink);
+  }
+
+  .table-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .table-card .table-head {
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid var(--rule);
+    background: linear-gradient(180deg, var(--paper) 0%, #f8fafd 100%);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .table-card .table-head h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .table-card .table-head .meta {
+    font-size: 10.5px; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+  }
+  .table-wrapper { overflow-x: auto; }
+
+  /* ---------- EVOLUTION CHART ---------- */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 1100px) { .chart-grid { grid-template-columns: 1fr; } }
+  .chart-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+  }
+  .chart-card h4 {
+    margin: 0 0 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .chart-card .canvas-wrap { position: relative; height: 240px; }
+
+  /* ---------- METRIC PICKER (cascading 3-level) ---------- */
+  .metric-bar {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .metric-bar .label {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .metric-picker { position: relative; flex: 1; min-width: 320px; }
+  .metric-picker-button {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--ink);
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    transition: background 0.15s;
+  }
+  .metric-picker-button:hover { background: var(--accent-soft); }
+  .metric-picker-button .path { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .metric-picker-button .crumb {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .metric-picker-button .crumb-sep { color: var(--rule); }
+  .metric-picker-button .leaf {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .metric-picker-button .caret {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-mute);
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+  .metric-picker.open .metric-picker-button .caret { transform: rotate(180deg); color: var(--accent); }
+  .metric-picker.open .metric-picker-button { background: var(--accent-soft); }
+
+  .metric-picker-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 0 12px 24px var(--shadow);
+    display: grid;
+    grid-template-columns: 200px 240px 1fr;
+    z-index: 50;
+    max-height: 380px;
+    min-height: 320px;
+  }
+  .metric-picker-panel[hidden] { display: none; }
+  .metric-col {
+    border-right: 1px solid var(--rule);
+    overflow-y: auto;
+    padding: 6px 0;
+  }
+  .metric-col:last-child { border-right: 0; }
+  .metric-col::-webkit-scrollbar { width: 5px; }
+  .metric-col::-webkit-scrollbar-thumb { background: var(--rule); }
+  .metric-col-header {
+    padding: 8px 14px 6px;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-2);
+    position: sticky; top: 0;
+  }
+  .metric-opt {
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border-left: 3px solid transparent;
+    line-height: 1.3;
+    transition: background 0.1s;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .metric-opt:hover { background: var(--bg-2); }
+  .metric-opt.active {
+    background: var(--bg-2);
+    color: var(--ink);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+  .metric-opt .arrow { color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .metric-opt.leaf { padding: 7px 14px; }
+  .metric-opt.leaf .pt-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    background: var(--bg-2);
+    padding: 1px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .chart-hero {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px 26px 26px;
+    box-shadow: var(--shadow);
+  }
+  .chart-hero .head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px; margin-bottom: 18px;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .chart-hero .head h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .chart-hero .head .meta {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+    text-align: right;
+  }
+  .chart-hero .canvas-wrap { position: relative; height: 380px; }
+
+  /* ---------- MODE TOGGLE ---------- */
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+    margin-right: 12px;
+  }
+  .mode-toggle button {
+    background: transparent; border: 0;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.15s;
+  }
+  .mode-toggle button.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .mode-toggle button:not(.active):hover { color: var(--ink); }
+
+  /* ---------- RATIO BUILDER ---------- */
+  .ratio-builder {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .ratio-builder h4 {
+    margin: 0 0 12px;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .ratio-formula {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  @media (max-width: 760px) { .ratio-formula { grid-template-columns: 1fr; } }
+  .ratio-slot {
+    background: var(--bg);
+    border: 1.5px dashed var(--rule);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-height: 100px;
+  }
+  .ratio-slot.has-items { border-style: solid; border-color: var(--rule); background: var(--bg-2); }
+  .ratio-slot.num { border-top: 3px solid var(--accent); }
+  .ratio-slot.den { border-top: 3px solid var(--primary); }
+  .ratio-slot .slot-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .ratio-slot .slot-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .ratio-item {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 8px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .ratio-item .item-info { line-height: 1.3; }
+  .ratio-item .item-cat {
+    font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 700; margin-bottom: 2px;
+  }
+  .ratio-item .item-name { font-weight: 500; color: var(--ink); }
+  .ratio-item .pt-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-mute); background: var(--bg-2);
+    padding: 1px 5px; border-radius: 2px; margin-left: 4px;
+  }
+  .ratio-item .x {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-mute);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 11px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .ratio-item .x:hover { background: var(--neg); color: white; border-color: var(--neg); }
+  .add-metric-btn {
+    background: var(--paper);
+    border: 1px dashed var(--rule);
+    color: var(--primary);
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
+    transition: all 0.15s;
+  }
+  .add-metric-btn:hover { background: var(--primary-soft); border-style: solid; border-color: var(--primary); }
+
+  .ratio-op {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+  }
+  .op-toggle {
+    display: flex;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .op-toggle button {
+    background: transparent; border: 0;
+    width: 36px; height: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px; font-weight: 700;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .op-toggle button.active {
+    background: var(--paper);
+    color: var(--accent);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .ratio-options {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    display: flex; gap: 18px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .ratio-options label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .ratio-options input[type=checkbox] { accent-color: var(--accent); }
+  .ratio-options .name-input {
+    flex: 1; min-width: 200px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 7px 10px;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+    border-radius: 6px;
+  }
+  .ratio-options .name-input:focus { outline: none; border-color: var(--accent); }
+
+  /* Picker overlay flotante (para añadir métrica al ratio) */
+  .picker-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,31,61,0.45);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .picker-overlay[hidden] { display: none; }
+  .picker-modal {
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: var(--shadow-strong);
+    width: min(820px, 100%);
+    max-height: 85vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+  }
+  .picker-modal-head {
+    padding: 14px 18px; border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg-2);
+  }
+  .picker-modal-head h4 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .picker-modal-head .close-x {
+    background: transparent; border: 1px solid var(--rule);
+    width: 28px; height: 28px;
+    cursor: pointer; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-mute);
+  }
+  .picker-modal-head .close-x:hover { background: var(--neg-soft); color: var(--neg); border-color: var(--neg); }
+  .picker-modal-body {
+    display: grid;
+    grid-template-columns: 200px 240px 1fr;
+    overflow: hidden;
+  }
+
+  /* ---------- SOLVENCIA · gauges ---------- */
+  .solvency-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  .solvency-card {
+    background: var(--paper); border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .solvency-card:hover { box-shadow: var(--shadow-strong); transform: translateY(-2px); }
+  .solvency-card .name {
+    font-family: 'Fraunces', serif; font-size: 16px; line-height: 1.2;
+    margin: 6px 0 0; color: var(--ink);
+  }
+  .solvency-card .clave-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    color: var(--paper); background: var(--accent);
+    font-weight: 600; padding: 2px 7px; border-radius: 3px;
+  }
+  .gauge-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .gauge {
+    text-align: center;
+    padding: 10px 8px;
+    background: var(--bg);
+    border-radius: 8px;
+  }
+  .gauge svg { display: block; margin: 0 auto; }
+  .gauge .label { font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mute); font-weight: 700; }
+  .gauge .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 2px;
+    letter-spacing: -0.02em;
+  }
+  .gauge .value .unit { font-size: 12px; color: var(--ink-mute); margin-left: 1px; }
+  .gauge.ok .value { color: var(--pos); }
+  .gauge.warn .value { color: var(--warn); }
+  .gauge.bad .value { color: var(--neg); }
+  .gauge.muted .value { color: var(--ink-mute); }
+  .solvency-card .underdata {
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule);
+    font-size: 11.5px; color: var(--ink-mute); line-height: 1.6;
+    display: grid; grid-template-columns: 1fr auto; row-gap: 4px; column-gap: 12px;
+  }
+  .solvency-card .underdata .num { color: var(--ink); font-weight: 600; }
+
+  /* footer note */
+  .footer-note {
+    padding: 18px 32px 28px;
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+    line-height: 1.5;
+  }
+  .footer-note b { color: var(--ink-soft); }
+  .footer-note .accent { color: var(--accent); font-weight: 600; }
+
+  /* hint banner */
+  .hint {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    padding: 12px 18px;
+    font-size: 12.5px;
+    color: var(--ink);
+    margin-bottom: 24px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .hint .marker {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="logo-row">
+        <img class="afi-logo" src="https://cdn.prod.website-files.com/67174dcb1d43b06a0eae317e/672bbbc7a2b88045e5661994_logo-afi.svg"
+             alt="Afi" onerror="this.outerHTML='<span class=&quot;afi-text&quot;>Afi</span>'">
+        <span class="divider"></span>
+        <span class="product">Observatorio Seguros</span>
+      </div>
+      <div class="tag">Libro de Balances · DGSFP</div>
+    </div>
+    <div class="selected-bar">
+      <h4>Comparando</h4>
+      <div class="pills" id="pills"></div>
+    </div>
+    <div class="agg-section">
+      <h4>Agregados sectoriales <span class="hint-mini">click para añadir/quitar</span></h4>
+      <div class="agg-grid" id="aggGrid"></div>
+    </div>
+    <div class="search-box">
+      <input id="search" placeholder="Buscar entidad…" autocomplete="off">
+    </div>
+    <div class="ent-list" id="entList"></div>
+    <div class="footer-aux">
+      Fuente <b>DGSFP</b> · Libro de Balances<br>
+      <span id="metaInfo"></span>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <div class="headline">Análisis <span class="accent">comparado</span> de aseguradoras</div>
+        <div class="headline-sub">241 entidades · ejercicios 2016–2024</div>
+      </div>
+      <div class="year-control">
+        <label>Ejercicio</label>
+        <div class="year-pill-group" id="yearGroup"></div>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="resumen">Resumen 360º</button>
+      <button class="tab" data-tab="balance">Balance</button>
+      <button class="tab" data-tab="pyg">Cuenta de PyG</button>
+      <button class="tab" data-tab="solvencia">Solvencia</button>
+      <button class="tab" data-tab="plantilla">Plantilla</button>
+      <button class="tab" data-tab="evolucion">Evolución</button>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <div class="footer-note">
+      <b>Prototipo</b> · datos del Libro de Balances y Cuentas de la <span class="accent">DGSFP</span>.
+      Importes en euros, salvo ratios. PyG agregada por entidad (suma de ramos, operación = total).
+      La versión productiva se desplegará con dominio propio, lazy-loading por entidad y backend ligero para detalle de ramo.
+    </div>
+  </main>
+</div>
+
+<!-- datos cargados desde data/dgsfp.json al iniciar -->
+<script>
+(async function(){
+  // ---------- DATA LOADER ----------
+  function showLoading(msg) {
+    document.getElementById('content').innerHTML =
+      `<div class="empty-state"><div class="big">${msg}</div><div class="small">Cargando datos…</div></div>`;
+  }
+  function showError(err) {
+    document.getElementById('content').innerHTML =
+      `<div class="empty-state"><div class="big" style="color:var(--neg)">Error</div><div class="small">${err}</div></div>`;
+  }
+  showLoading('Observatorio Seguros');
+  let DATA;
+  try {
+    const res = await fetch('./data/dgsfp.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+  } catch (e) {
+    showError('No se pudo cargar data/dgsfp.json — ' + e.message);
+    return;
+  }
+  const ENT = DATA.ent;
+  const D = DATA.d;
+  const LIT = DATA.lit;
+  const YEARS = DATA.meta.years;
+  const ENT_BY_CLAVE = Object.fromEntries(ENT.map(e => [e.clave, e]));
+
+  // ---------- AGREGADOS SECTORIALES ----------
+  const AGGREGATE_DEFS = [
+    { id: 'AGG:SEC', name: 'SECTOR',              short: 'Sector',        match: () => true },
+    { id: 'AGG:SA',  name: 'Sociedades anónimas', short: 'S.A.',          match: e => /^[Cc]/.test(e.clave) },
+    { id: 'AGG:MUT', name: 'Mutuas',              short: 'Mutuas',        match: e => e.clave[0] === 'M' },
+    { id: 'AGG:MTL', name: 'Mutualidades',        short: 'Mutualidades',  match: e => e.clave[0] === 'P' },
+  ];
+
+  function buildAggregateData(claves) {
+    const data = { k: {}, a: {}, p: {}, nv: {}, vi: {}, nt: {}, s: {} };
+    for (const y of YEARS) {
+      const ystr = String(y);
+      // KPIs cabecera (suma; ratios se recalculan después)
+      const kAgg = {};
+      for (const c of claves) {
+        const k = D[c]?.k?.[ystr];
+        if (!k) continue;
+        for (const [key, val] of Object.entries(k)) {
+          if (val === null || val === undefined || isNaN(val)) continue;
+          if (key === 'r_cso' || key === 'r_cmo') continue;
+          kAgg[key] = (kAgg[key] || 0) + val;
+        }
+      }
+      if (kAgg.fp_cso != null && kAgg.cso) kAgg.r_cso = kAgg.fp_cso / kAgg.cso;
+      if (kAgg.fp_cmo != null && kAgg.cmo) kAgg.r_cmo = kAgg.fp_cmo / kAgg.cmo;
+      if (Object.keys(kAgg).length > 0) data.k[ystr] = kAgg;
+      // Vectores (a, p, nv, vi, nt) — suma posición a posición
+      for (const field of ['a', 'p', 'nv', 'vi', 'nt']) {
+        let vec = null, hasAny = false;
+        for (const c of claves) {
+          const v = D[c]?.[field]?.[ystr];
+          if (!v) continue;
+          if (vec === null) vec = new Array(v.length).fill(null);
+          for (let i = 0; i < v.length; i++) {
+            if (v[i] === null || v[i] === undefined) continue;
+            vec[i] = (vec[i] === null ? 0 : vec[i]) + v[i];
+            hasAny = true;
+          }
+        }
+        if (hasAny) data[field][ystr] = vec;
+      }
+      // Solvencia: suma de capitales y FP, ratios recalculados
+      const sAgg = {};
+      for (const c of claves) {
+        const sObj = D[c]?.s?.[ystr];
+        if (!sObj) continue;
+        for (const [key, val] of Object.entries(sObj)) {
+          if (val === null || val === undefined || isNaN(val)) continue;
+          if (key === 's6_total' || key === 's7_total') continue; // ratios → recalcular
+          sAgg[key] = (sAgg[key] || 0) + val;
+        }
+      }
+      if (sAgg.s2_total != null && sAgg.s4_total) sAgg.s6_total = sAgg.s2_total / sAgg.s4_total;
+      if (sAgg.s3_total != null && sAgg.s5_total) sAgg.s7_total = sAgg.s3_total / sAgg.s5_total;
+      if (Object.keys(sAgg).length > 0) data.s[ystr] = sAgg;
+    }
+    return data;
+  }
+
+  // Construir agregados, registrarlos como entidades virtuales y añadir su data
+  const AGGREGATES = AGGREGATE_DEFS.map(def => {
+    const claves = ENT.filter(def.match).map(e => e.clave);
+    const agg = {
+      ...def,
+      n: claves.length,
+      claves,
+      isAggregate: true,
+      clave: def.id,
+      nombre: def.name,
+      provincia: '—',
+      ambito: `Agregado · ${claves.length} entidades`,
+      years: YEARS,
+    };
+    ENT_BY_CLAVE[def.id] = agg;
+    D[def.id] = buildAggregateData(claves);
+    return agg;
+  });
+
+  document.getElementById('metaInfo').innerHTML =
+    `${DATA.meta.n} entidades · ${YEARS[0]}–${YEARS[YEARS.length-1]}`;
+
+  // Default: pick three large companies if present, else first three
+  const DEFAULT_CLAVES = ['M0083','C0109','C0723']; // Mutua Madrileña, Allianz, AXA
+  const state = {
+    selected: [],
+    year: YEARS[YEARS.length - 1], // último año disponible
+    tab: 'resumen',
+    search: '',
+    metric: { cat: 'pyg', sub: 'nv', id: 'nv:PT8' }, // PyG · No Vida · Primas imputadas netas
+    metricPickerOpen: false,
+    metricSearch: '',
+    // Modo Evolución
+    mode: 'simple', // 'simple' | 'ratio'
+    ratio: {
+      num: [{ cat: 'pyg', sub: 'nv', id: 'nv:PT26' }],   // Default: siniestralidad NV
+      den: [{ cat: 'pyg', sub: 'nv', id: 'nv:PT8' }],    // / primas NV
+      op: '÷',
+      scale: 100,                                          // ×100 → %
+      name: '',
+    },
+    pickerTarget: 'simple', // 'simple' | 'ratio_num' | 'ratio_den'
+  };
+
+  // Pick defaults that exist
+  for (const c of DEFAULT_CLAVES) {
+    if (ENT_BY_CLAVE[c]) state.selected.push(c);
+  }
+  if (state.selected.length === 0) {
+    // fallback: pick three with most data
+    const ranked = ENT.map(e => ({
+      c: e.clave,
+      score: Object.keys(D[e.clave]?.k || {}).length
+    })).sort((a,b)=>b.score-a.score).slice(0,3).map(r=>r.c);
+    state.selected = ranked;
+  }
+
+  // ---------- HELPERS ----------
+  function fmtMoney(v) {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    const abs = Math.abs(v);
+    if (abs >= 1e9) return (v/1e9).toLocaleString('es-ES',{maximumFractionDigits:2}) + ' B €';
+    if (abs >= 1e6) return (v/1e6).toLocaleString('es-ES',{maximumFractionDigits:2}) + ' M €';
+    if (abs >= 1e3) return (v/1e3).toLocaleString('es-ES',{maximumFractionDigits:1}) + ' k €';
+    return v.toLocaleString('es-ES',{maximumFractionDigits:2}) + ' €';
+  }
+  function fmtFull(v) {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    return v.toLocaleString('es-ES',{maximumFractionDigits:2}) + ' €';
+  }
+  function fmtRatio(v) {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    return (v*100).toLocaleString('es-ES',{maximumFractionDigits:0}) + '%';
+  }
+  function fmtNum(v) {
+    if (v === null || v === undefined || isNaN(v)) return '—';
+    return v.toLocaleString('es-ES');
+  }
+  function colorOf(v) {
+    if (v === null || v === undefined || isNaN(v)) return 'muted';
+    return v >= 0 ? 'pos' : 'neg';
+  }
+  function getKPI(clave, year, key) {
+    return D[clave]?.k?.[year]?.[key];
+  }
+  function getBalanceVec(clave, year, type) {
+    return D[clave]?.[type]?.[year];
+  }
+  function ratioBucket(r) {
+    if (r === null || r === undefined) return 'muted';
+    if (r >= 1.5) return 'ok';
+    if (r >= 1.0) return 'warn';
+    return 'bad';
+  }
+  // Color palette for series (multiple companies) — afi-leaning, distinct
+  const PALETTE = ['#0a2a52','#0891b2','#d97706','#7c2d12','#15803d','#7e22ce','#be123c','#365314'];
+
+  // ---------- SPARKLINE & DELTA ----------
+  function sparklineSVG(values, color, w=84, h=22) {
+    const valid = values.map(v => (v === null || v === undefined || isNaN(v)) ? null : v);
+    const present = valid.filter(v => v !== null);
+    if (present.length < 2) return '';
+    const min = Math.min(...present), max = Math.max(...present);
+    const range = max - min || 1;
+    const step = w / Math.max(1, valid.length - 1);
+    const pad = 2;
+    const yOf = v => v === null ? null : pad + (h - 2*pad) * (1 - (v - min) / range);
+    const points = valid.map((v, i) => v === null ? null : [i*step, yOf(v)]);
+    let d = '', started = false;
+    for (const p of points) {
+      if (p === null) { started = false; continue; }
+      d += (started ? ' L ' : 'M ') + p[0].toFixed(1) + ' ' + p[1].toFixed(1);
+      started = true;
+    }
+    let lastIdx = -1;
+    for (let i = points.length - 1; i >= 0; i--) if (points[i] !== null) { lastIdx = i; break; }
+    const lastPt = lastIdx >= 0 ? points[lastIdx] : null;
+    return `<svg class="sparkline" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <path d="${d}" stroke="${color}"/>
+      ${lastPt ? `<circle cx="${lastPt[0].toFixed(1)}" cy="${lastPt[1].toFixed(1)}" r="2.4" fill="${color}"/>` : ''}
+    </svg>`;
+  }
+
+  function deltaPct(curr, prev) {
+    if (curr === null || curr === undefined || prev === null || prev === undefined || prev === 0) return null;
+    return (curr - prev) / Math.abs(prev);
+  }
+
+  function deltaBadge(curr, prev) {
+    const d = deltaPct(curr, prev);
+    if (d === null) return '';
+    const isPos = d > 0.001, isNeg = d < -0.001;
+    const cls = isPos ? 'pos' : (isNeg ? 'neg' : 'flat');
+    const arrow = isPos ? '▲' : (isNeg ? '▼' : '·');
+    const pct = (d*100).toLocaleString('es-ES', { maximumFractionDigits: 1 });
+    return `<span class="delta ${cls}"><span class="arrow">${arrow}</span>${pct}%</span>`;
+  }
+
+  function seriesFor(clave, key) {
+    return YEARS.map(y => {
+      const v = D[clave]?.k?.[String(y)]?.[key];
+      return (v === undefined ? null : v);
+    });
+  }
+
+  // ---------- SIDEBAR ----------
+  const $entList = document.getElementById('entList');
+  const $pills = document.getElementById('pills');
+  const $search = document.getElementById('search');
+  const $aggGrid = document.getElementById('aggGrid');
+
+  function renderAggregates() {
+    $aggGrid.innerHTML = AGGREGATES.map(a => {
+      const isActive = state.selected.includes(a.id);
+      return `<button class="agg-chip ${isActive?'active':''}" data-agg="${a.id}">
+        <span class="agg-sigma">Σ</span>
+        <span class="agg-name">${a.name}</span>
+        <span class="agg-count">${a.n} entidades</span>
+      </button>`;
+    }).join('');
+  }
+  $aggGrid.addEventListener('click', e => {
+    const btn = e.target.closest('[data-agg]');
+    if (!btn) return;
+    const id = btn.dataset.agg;
+    const idx = state.selected.indexOf(id);
+    if (idx >= 0) state.selected.splice(idx, 1);
+    else if (state.selected.length < 6) state.selected.push(id);
+    rerender();
+  });
+
+  function renderEntList() {
+    const q = state.search.toLowerCase().trim();
+    const filtered = q
+      ? ENT.filter(e => e.nombre.toLowerCase().includes(q) || e.clave.toLowerCase().includes(q))
+      : ENT;
+    const max = 200;
+    const rows = filtered.slice(0, max).map(e => {
+      const isActive = state.selected.includes(e.clave);
+      return `<div class="ent-row ${isActive?'active':''}" data-clave="${e.clave}">
+        <div class="name">${e.nombre}</div>
+        <div class="meta"><span class="clave">${e.clave}</span> · ${e.provincia || '—'} · ${e.ambito || '—'}</div>
+      </div>`;
+    }).join('');
+    const more = filtered.length > max ? `<div class="ent-row" style="cursor:default;color:var(--ink-mute);font-size:11px;font-style:italic;">+ ${filtered.length-max} más — refina la búsqueda</div>` : '';
+    $entList.innerHTML = rows + more;
+  }
+  function renderPills() {
+    if (state.selected.length === 0) {
+      $pills.innerHTML = '<span class="pill empty">— elige una entidad —</span>';
+      return;
+    }
+    $pills.innerHTML = state.selected.map((c, i) => {
+      const e = ENT_BY_CLAVE[c];
+      const isAgg = e && e.isAggregate;
+      const bg = isAgg ? 'var(--gold)' : PALETTE[i % PALETTE.length];
+      return `<span class="pill ${isAgg?'aggregate':''}" style="background:${bg}">
+        ${isAgg ? '<span class="sigma">Σ</span>' : ''}<span class="pill-name">${e ? e.nombre : c}</span>
+        <span class="x" data-rm="${c}">×</span>
+      </span>`;
+    }).join('');
+  }
+  $entList.addEventListener('click', e => {
+    const row = e.target.closest('.ent-row');
+    if (!row || !row.dataset.clave) return;
+    const clave = row.dataset.clave;
+    const idx = state.selected.indexOf(clave);
+    if (idx >= 0) state.selected.splice(idx, 1);
+    else if (state.selected.length < 6) state.selected.push(clave);
+    rerender();
+  });
+  $pills.addEventListener('click', e => {
+    const x = e.target.closest('[data-rm]');
+    if (!x) return;
+    const c = x.dataset.rm;
+    state.selected = state.selected.filter(s => s !== c);
+    rerender();
+  });
+  $search.addEventListener('input', e => {
+    state.search = e.target.value;
+    renderEntList();
+  });
+
+  // ---------- TOPBAR ----------
+  const $yearGroup = document.getElementById('yearGroup');
+  function renderYears() {
+    $yearGroup.innerHTML = YEARS.map(y =>
+      `<button data-y="${y}" class="${y===state.year?'active':''}">${y}</button>`
+    ).join('');
+  }
+  $yearGroup.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    state.year = parseInt(btn.dataset.y);
+    rerender();
+  });
+
+  // ---------- TABS ----------
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    state.tab = btn.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === state.tab));
+    renderContent();
+  });
+
+  // ---------- CONTENT TABS ----------
+  const $content = document.getElementById('content');
+
+  function emptyState(msg) {
+    return `<div class="empty-state">
+      <div class="big">Sin selección</div>
+      <div class="small">${msg}</div>
+    </div>`;
+  }
+
+  // RESUMEN: hero band + cards with sparklines & deltas
+  function renderResumen() {
+    if (state.selected.length === 0) {
+      return emptyState('Elige una o varias entidades en la columna izquierda para empezar a comparar.');
+    }
+    const y = state.year;
+    const yPrev = y - 1;
+    const yIdx = YEARS.indexOf(y);
+
+    // ----- HERO BAND: agregados de las entidades seleccionadas
+    let totActivo = 0, totPN = 0, totPrimas = 0, totRes = 0, totEmp = 0;
+    let nActivo = 0, nPN = 0, nPrimas = 0, nRes = 0, nEmp = 0;
+    let bestSolv = null, bestSolvName = '', worstSolv = null, worstSolvName = '';
+    state.selected.forEach(c => {
+      const k = D[c]?.k?.[y] || {};
+      if (k.activo !== undefined)        { totActivo += k.activo; nActivo++; }
+      if (k.pn !== undefined)            { totPN += k.pn; nPN++; }
+      const primas = (k.primas_nv || 0) + (k.primas_vi || 0);
+      if (k.primas_nv !== undefined || k.primas_vi !== undefined) { totPrimas += primas; nPrimas++; }
+      if (k.res_ejercicio !== undefined) { totRes += k.res_ejercicio; nRes++; }
+      if (k.emp_t !== undefined)         { totEmp += k.emp_t; nEmp++; }
+      if (k.r_cso !== undefined) {
+        if (bestSolv === null || k.r_cso > bestSolv) { bestSolv = k.r_cso; bestSolvName = ENT_BY_CLAVE[c]?.nombre || c; }
+        if (worstSolv === null || k.r_cso < worstSolv) { worstSolv = k.r_cso; worstSolvName = ENT_BY_CLAVE[c]?.nombre || c; }
+      }
+    });
+    const heroBand = `<div class="hero-band">
+      <div class="hero-head">
+        <h2>Comparativa <span class="accent">agregada</span> · ${state.selected.length} ${state.selected.length===1?'entidad':'entidades'}</h2>
+        <div class="meta">Ejercicio ${y}</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="label">Activo total agregado</div>
+          <div class="value">${nActivo ? fmtMoney(totActivo) : '—'}</div>
+          <div class="sub">${nActivo} con dato</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Primas devengadas (NV+V)</div>
+          <div class="value">${nPrimas ? fmtMoney(totPrimas) : '—'}</div>
+          <div class="sub">${nPrimas} con dato</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Resultado del ejercicio</div>
+          <div class="value">${nRes ? fmtMoney(totRes) : '—'}</div>
+          <div class="sub">${nRes} con dato</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Plantilla agregada</div>
+          <div class="value">${nEmp ? totEmp.toLocaleString('es-ES') : '—'}<span class="unit">empleados</span></div>
+          <div class="sub">${nEmp} con dato</div>
+        </div>
+        <div class="hero-stat">
+          <div class="label">Mejor ratio CSO</div>
+          <div class="value">${bestSolv !== null ? bestSolv.toLocaleString('es-ES',{maximumFractionDigits:2}) : '—'}<span class="unit">x</span></div>
+          <div class="sub" title="${bestSolvName}">${bestSolvName.length > 22 ? bestSolvName.slice(0,22)+'…' : bestSolvName}</div>
+        </div>
+      </div>
+    </div>`;
+
+    // ----- CARDS por entidad
+    const cards = state.selected.map((c, i) => {
+      const e = ENT_BY_CLAVE[c];
+      const k = D[c]?.k?.[y] || {};
+      const kPrev = D[c]?.k?.[yPrev] || {};
+      const color = PALETTE[i % PALETTE.length];
+
+      // KPIs con sparkline + delta YoY
+      const rows = [
+        { lbl: 'Total Activo',                key: 'activo',         fmt: fmtMoney },
+        { lbl: 'Patrimonio neto',             key: 'pn',             fmt: fmtMoney },
+        { lbl: 'Resultado del ejercicio',     key: 'res_ejercicio',  fmt: fmtMoney, signed: true,
+          fallback: 'res_ej_pn' },
+        { lbl: 'Primas No Vida',              key: 'primas_nv',      fmt: fmtMoney },
+        { lbl: 'Primas Vida',                 key: 'primas_vi',      fmt: fmtMoney },
+        { lbl: 'Resultado técnico No Vida',   key: 'res_tec_nv',     fmt: fmtMoney, signed: true },
+        { lbl: 'Resultado técnico Vida',      key: 'res_tec_vi',     fmt: fmtMoney, signed: true },
+        { lbl: 'Empleados al cierre',         key: 'emp_t',          fmt: fmtNum },
+        { lbl: 'Ratio Solvencia (CSO)',       key: 'r_cso',
+          fmt: v => v.toLocaleString('es-ES',{maximumFractionDigits:2})+'x',
+          ratio: true, signed: false },
+      ];
+      const rowsHTML = rows.map(r => {
+        let v = k[r.key];
+        if (v === undefined && r.fallback) v = k[r.fallback];
+        let prev = kPrev[r.key];
+        if (prev === undefined && r.fallback) prev = kPrev[r.fallback];
+        const valStr = v !== undefined ? r.fmt(v) : '—';
+        const cls = (r.signed && v !== undefined) ? (v >= 0 ? 'pos' : 'neg') :
+                    (r.ratio && v !== undefined) ? ratioBucket(v).replace('ok','pos').replace('warn','').replace('bad','neg') :
+                    (v === undefined ? 'muted' : '');
+        const series = seriesFor(c, r.key === 'res_ejercicio' && k.res_ejercicio === undefined ? 'res_ej_pn' : r.key);
+        const spark = sparklineSVG(series, color);
+        const delta = deltaBadge(v, prev);
+        return `<div class="kpi-row">
+          <div class="label">${r.lbl}</div>
+          <div class="value-wrap">
+            <div class="top-line"><span class="value ${cls}">${valStr}</span>${delta}</div>
+            <div class="sparkwrap">${spark}</div>
+          </div>
+        </div>`;
+      }).join('');
+
+      return `<div class="company-card" style="border-top:3px solid ${color}">
+        <div class="head">
+          <span class="clave-tag">${c}</span>
+          <h3>${e.nombre}</h3>
+          <div class="sub">${e.provincia || '—'} · ${e.ambito || '—'}</div>
+        </div>
+        <div class="kpi-list">${rowsHTML}</div>
+      </div>`;
+    }).join('');
+
+    return heroBand + `<div class="companies-grid">${cards}</div>`;
+  }
+
+  // BALANCE: full activo + pasivo as comparison table
+  function renderBalanceTable(type) {
+    const lits = LIT[type];
+    const y = state.year;
+    const colsHead = state.selected.map((c,i) =>
+      `<th class="num" style="color:${PALETTE[i%PALETTE.length]}">${ENT_BY_CLAVE[c]?.nombre || c}<div style="font-weight:400;font-size:10px;color:var(--ink-mute);font-family:'JetBrains Mono'">${c}</div></th>`
+    ).join('');
+    const totalPT = type === 'act' ? 'PT62' : 'PT45';
+    const ptnPN = 'PT70';
+    const rows = lits.map(({pt, label}) => {
+      const isHeading = !label.match(/^\s*[IVX]+\.|^\s*\d+\.|^\s*\d+\.\d+/) && label.match(/^[A-Z][^a-z]/) && !label.startsWith('TOTAL');
+      const isTotal = label.startsWith('TOTAL') || pt === totalPT;
+      const isSubTotal = label.match(/^[IVX]+\./);
+      let indentCls = '';
+      if (label.match(/^\s+\d+\.\d+/)) indentCls = 'indent-2';
+      else if (label.match(/^\s+\d+\./) || label.match(/^\s+[IVX]+\./)) indentCls = 'indent-1';
+      const rowCls = isTotal ? 'total' : '';
+      const dataKey = type === 'act' ? 'a' : 'p';
+      const cells = state.selected.map(c => {
+        const vec = D[c]?.[dataKey]?.[y];
+        const idx = lits.findIndex(L => L.pt === pt);
+        const v = vec ? vec[idx] : null;
+        return `<td class="num">${v !== null && v !== undefined ? fmtFull(v) : ''}</td>`;
+      }).join('');
+      return `<tr class="${rowCls}">
+        <td class="label-cell ${indentCls}" style="${isTotal?'font-weight:600':''}">${label.trim()}</td>
+        ${cells}
+      </tr>`;
+    }).join('');
+    return `<div class="table-card">
+      <div class="table-head">
+        <h3>${type === 'act' ? 'Activo del balance' : 'Pasivo y patrimonio neto'}</h3>
+        <div class="meta">Modelo ${type === 'act' ? '0301' : '0302'} · ejercicio ${y}</div>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr><th>Partida</th>${colsHead}</tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+  function renderBalance() {
+    if (state.selected.length === 0)
+      return emptyState('Elige entidades en el sidebar para ver el balance comparado.');
+    return renderBalanceTable('act') + renderBalanceTable('pas');
+  }
+
+  // PyG: headline metrics in table format
+  function renderPyG() {
+    if (state.selected.length === 0)
+      return emptyState('Elige entidades en el sidebar para ver la cuenta de PyG.');
+    const y = state.year;
+    const groups = [
+      { title: 'Cuenta técnica No Vida', items: [
+        ['Primas imputadas netas','primas_nv'],
+        ['Siniestralidad neta','siniestralidad_nv'],
+        ['Gastos de explotación','gastos_expl_nv'],
+        ['Resultado técnico No Vida','res_tec_nv', true],
+      ]},
+      { title: 'Cuenta técnica Vida', items: [
+        ['Primas imputadas netas','primas_vi'],
+        ['Siniestralidad neta','siniestralidad_vi'],
+        ['Gastos de explotación','gastos_expl_vi'],
+        ['Resultado técnico Vida','res_tec_vi', true],
+      ]},
+      { title: 'Cuenta no técnica · resultado consolidado', items: [
+        ['Resultado cuenta técnica No Vida','res_no_vida'],
+        ['Resultado cuenta técnica Vida','res_vida'],
+        ['Resultado cuenta no técnica','res_no_tec'],
+        ['Resultado antes de impuestos','res_antes_imp', true],
+        ['Resultado del ejercicio','res_ejercicio', true],
+      ]},
+    ];
+    const colsHead = state.selected.map((c,i) =>
+      `<th class="num" style="color:${PALETTE[i%PALETTE.length]}">${ENT_BY_CLAVE[c]?.nombre || c}</th>`).join('');
+    return groups.map(g => {
+      const rows = g.items.map(([lbl, key, isTotal]) => {
+        const cells = state.selected.map(c => {
+          const v = getKPI(c, y, key);
+          const cls = isTotal && v !== undefined ? colorOf(v) : '';
+          return `<td class="num ${cls}">${v !== undefined ? fmtFull(v) : ''}</td>`;
+        }).join('');
+        return `<tr class="${isTotal?'total':''}"><td class="label-cell">${lbl}</td>${cells}</tr>`;
+      }).join('');
+      return `<div class="table-card">
+        <div class="table-head"><h3>${g.title}</h3><div class="meta">ejercicio ${y}</div></div>
+        <div class="table-wrapper">
+          <table class="data-table"><thead><tr><th>Concepto</th>${colsHead}</tr></thead><tbody>${rows}</tbody></table>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // SVG ring gauge for ratios
+  function gaugeSVG(value, max, color) {
+    const size = 96, stroke = 9, r = (size - stroke)/2;
+    const C = 2*Math.PI*r;
+    const v = (value === null || value === undefined) ? 0 : Math.min(value/max, 1);
+    const dash = v * C;
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${'#e5e9f0'}" stroke-width="${stroke}"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}"
+        stroke-width="${stroke}" stroke-linecap="round"
+        stroke-dasharray="${dash} ${C-dash}"
+        transform="rotate(-90 ${size/2} ${size/2})"/>
+    </svg>`;
+  }
+
+  function renderSolvencia() {
+    if (state.selected.length === 0)
+      return emptyState('Elige entidades en el sidebar para ver la solvencia.');
+    const y = state.year;
+    const cards = state.selected.map((c,i) => {
+      const e = ENT_BY_CLAVE[c];
+      const k = D[c]?.k?.[y] || {};
+      const rcso = k.r_cso, rcmo = k.r_cmo;
+      const cls_cso = ratioBucket(rcso);
+      const cls_cmo = ratioBucket(rcmo);
+      const colorMap = { ok: '#047857', warn: '#b45309', bad: '#be123c', muted: '#94a3b8' };
+      const color = PALETTE[i % PALETTE.length];
+      return `<div class="solvency-card" style="border-top:3px solid ${color}">
+        <div class="clave-tag">${c}</div>
+        <div class="name">${e.nombre}</div>
+        <div class="gauge-row">
+          <div class="gauge ${cls_cso}">
+            ${gaugeSVG(rcso, 3, colorMap[cls_cso])}
+            <div class="value">${rcso !== undefined ? rcso.toLocaleString('es-ES',{maximumFractionDigits:2}) : '—'}<span class="unit">x</span></div>
+            <div class="label">Ratio CSO</div>
+          </div>
+          <div class="gauge ${cls_cmo}">
+            ${gaugeSVG(rcmo, 8, colorMap[cls_cmo])}
+            <div class="value">${rcmo !== undefined ? rcmo.toLocaleString('es-ES',{maximumFractionDigits:2}) : '—'}<span class="unit">x</span></div>
+            <div class="label">Ratio CMO</div>
+          </div>
+        </div>
+        <div class="underdata">
+          <span>CSO obligatorio</span>             <span class="num">${fmtMoney(k.cso)}</span>
+          <span>CMO obligatorio</span>             <span class="num">${fmtMoney(k.cmo)}</span>
+          <span>Fondos propios admisibles</span>   <span class="num">${fmtMoney(k.fp_cso)}</span>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="hint" style="background:linear-gradient(90deg,var(--accent-soft) 0%,var(--primary-soft) 100%);border-color:var(--accent)">
+        <span class="marker" style="color:var(--accent)">●</span>
+        Ratio &gt; 1,5x = sólido · 1,0–1,5x = adecuado · &lt;1,0x = insuficiente. Ejercicio <b>${y}</b>.
+      </div>
+      <div class="solvency-grid">${cards}</div>`;
+  }
+
+  // PLANTILLA: employees, gender split as chart
+  function renderPlantilla() {
+    if (state.selected.length === 0)
+      return emptyState('Elige entidades para comparar plantilla.');
+    const y = state.year;
+    const cards = state.selected.map((c,i) => {
+      const e = ENT_BY_CLAVE[c];
+      const k = D[c]?.k?.[y] || {};
+      const t = k.emp_t, m = k.emp_m, h = k.emp_h;
+      const pctM = (t && m !== undefined) ? (m/t*100) : null;
+      const pctH = (t && h !== undefined) ? (h/t*100) : null;
+      const color = PALETTE[i % PALETTE.length];
+      return `<div class="company-card" style="border-top:3px solid ${color}">
+        <div class="head">
+          <div class="clave-tag">${c}</div>
+          <h3>${e.nombre}</h3>
+          <div class="sub">Plantilla al cierre · ${y}</div>
+        </div>
+        <div style="text-align:center;padding:10px 0">
+          <div style="font-family:'JetBrains Mono';font-size:42px;font-weight:500;line-height:1">${fmtNum(t)}</div>
+          <div style="font-size:11px;color:var(--ink-mute);letter-spacing:0.16em;text-transform:uppercase;font-weight:600">empleados</div>
+        </div>
+        ${ (m !== undefined && h !== undefined && t) ? `
+          <div style="display:flex;height:24px;border:1px solid var(--ink);margin-top:14px">
+            <div style="background:#3b4f8a;width:${pctH}%;color:#fff;font-size:10.5px;font-family:'JetBrains Mono';display:flex;align-items:center;justify-content:center;font-weight:600">${pctH.toFixed(0)}%</div>
+            <div style="background:#c2410c;width:${pctM}%;color:#fff;font-size:10.5px;font-family:'JetBrains Mono';display:flex;align-items:center;justify-content:center;font-weight:600">${pctM.toFixed(0)}%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-mute);margin-top:4px">
+            <span>♂ ${fmtNum(h)} hombres</span><span>♀ ${fmtNum(m)} mujeres</span>
+          </div>
+        ` : '<div style="text-align:center;color:var(--ink-mute);font-size:11px">Sin datos de desglose</div>'}
+      </div>`;
+    }).join('');
+    return `<div class="companies-grid">${cards}</div>`;
+  }
+
+  // ---------- METRIC TREE (3 niveles para Evolución) ----------
+  // L1 = categoría · L2 = subcategoría · L3 = métrica concreta
+  const FMT = {
+    money:  { fmt: v => fmtMoney(v),  axis: v => Math.abs(v) >= 1e6 ? (v/1e6).toFixed(0)+'M' : (v/1e3).toFixed(0)+'k', unidad: '€' },
+    ratio:  { fmt: v => v.toLocaleString('es-ES',{maximumFractionDigits:2})+'x', axis: v => v.toFixed(1)+'x', unidad: 'veces' },
+    plant:  { fmt: v => fmtNum(v), axis: v => fmtNum(v), unidad: 'empleados' },
+  };
+  // Genera getter para vectores indexados por PT (balance + pyg)
+  function vecGetter(field, pt, lits) {
+    const idx = lits.findIndex(l => l.pt === pt);
+    return (c, y) => {
+      const vec = D[c]?.[field]?.[y];
+      return (vec && vec[idx] !== undefined) ? vec[idx] : undefined;
+    };
+  }
+  // Getter para celdas de solvencia (objeto plano)
+  function solGetter(cellId) {
+    return (c, y) => D[c]?.s?.[y]?.[cellId];
+  }
+
+  // Construye el árbol dinámicamente desde los literales
+  // Para PyG y Balance, cada PT del literal se convierte en una métrica
+  function ptToMetric(field, lits, pt, label) {
+    return {
+      id: field + ':' + pt,
+      pt: pt,
+      label: label.trim().replace(/\s+/g, ' '),
+      getter: vecGetter(field, pt, lits),
+      fmt: 'money',
+    };
+  }
+
+  const METRIC_TREE = {
+    pyg: {
+      label: 'Cuenta de PyG',
+      sub: {
+        nv: {
+          label: 'Cuenta técnica No Vida',
+          metrics: LIT.nv.map(l => ptToMetric('nv', LIT.nv, l.pt, l.label))
+        },
+        vi: {
+          label: 'Cuenta técnica Vida',
+          metrics: LIT.vi.map(l => ptToMetric('vi', LIT.vi, l.pt, l.label))
+        },
+        nt: {
+          label: 'Cuenta no técnica · resultado',
+          metrics: LIT.nt.map(l => ptToMetric('nt', LIT.nt, l.pt, l.label))
+        },
+      }
+    },
+    balance: {
+      label: 'Balance',
+      sub: {
+        activo: {
+          label: 'Activo',
+          metrics: LIT.act.map(l => ptToMetric('a', LIT.act, l.pt, l.label))
+        },
+        pasivo: {
+          label: 'Pasivo y Patrimonio Neto',
+          metrics: LIT.pas.map(l => ptToMetric('p', LIT.pas, l.pt, l.label))
+        },
+      }
+    },
+    solvencia: (() => {
+      // Particionamos por indicador padre y por tipo (capital vs ratio)
+      const fp_cells   = LIT.sol.filter(c => !c.is_ratio);
+      const ratio_cells = LIT.sol.filter(c => c.is_ratio);
+      return {
+        label: 'Solvencia',
+        sub: {
+          capital: {
+            label: 'Capital y fondos propios',
+            metrics: fp_cells.map(c => ({
+              id: 'sol:'+c.id,
+              pt: c.code,
+              label: c.desc,
+              getter: solGetter(c.id),
+              fmt: 'money',
+            }))
+          },
+          ratios: {
+            label: 'Ratios de cobertura',
+            metrics: ratio_cells.map(c => ({
+              id: 'sol:'+c.id,
+              pt: c.code,
+              label: c.desc,
+              getter: solGetter(c.id),
+              fmt: 'ratio',
+            }))
+          },
+        }
+      };
+    })(),
+  };
+
+  function findMetric(catId, subId, metId) {
+    const cat = METRIC_TREE[catId]; if (!cat) return null;
+    const sub = cat.sub[subId]; if (!sub) return null;
+    const met = sub.metrics.find(m => m.id === metId);
+    if (!met) return null;
+    return { cat, sub, met, catId, subId };
+  }
+
+  // EVOLUCION: dropdown jerárquico + chart hero · soporta modo simple y modo ratio
+  function renderModeToggle() {
+    return `<div class="metric-bar">
+        <div class="label">Modo</div>
+        <div class="mode-toggle" id="modeToggle">
+          <button class="${state.mode==='simple'?'active':''}" data-mode="simple">Métrica simple</button>
+          <button class="${state.mode==='ratio'?'active':''}" data-mode="ratio">Ratio personalizado</button>
+        </div>
+      </div>`;
+  }
+
+  // Resuelve un metricRef ({cat,sub,id}) al objeto métrica completo del árbol
+  function resolveMetric(ref) {
+    if (!ref) return null;
+    return findMetric(ref.cat, ref.sub, ref.id);
+  }
+
+  function renderRatioItem(ref, slot, idx) {
+    const sel = resolveMetric(ref);
+    if (!sel) return '';
+    return `<div class="ratio-item">
+      <div class="item-info">
+        <div class="item-cat">${sel.cat.label} · ${sel.sub.label}</div>
+        <div class="item-name">${sel.met.label}${sel.met.pt ? `<span class="pt-tag">${sel.met.pt}</span>` : ''}</div>
+      </div>
+      <button class="x" data-rm-ratio="${slot}" data-idx="${idx}" title="Quitar">×</button>
+    </div>`;
+  }
+
+  function autoRatioName() {
+    if (state.ratio.name) return state.ratio.name;
+    const num = state.ratio.num.map(r => resolveMetric(r)?.met.label).filter(Boolean).join(' + ');
+    const den = state.ratio.den.map(r => resolveMetric(r)?.met.label).filter(Boolean).join(' + ');
+    if (!num || !den) return '—';
+    const op = state.ratio.op;
+    const base = state.ratio.num.length > 1 ? `(${num})` : num;
+    const div  = state.ratio.den.length > 1 ? `(${den})` : den;
+    const expr = `${base} ${op} ${div}`;
+    return state.ratio.scale === 100 ? `${expr} × 100` : expr;
+  }
+
+  function computeRatioValue(c, y) {
+    const sumOf = (arr) => {
+      let s = 0, found = 0;
+      for (const ref of arr) {
+        const sel = resolveMetric(ref);
+        if (!sel) continue;
+        const v = sel.met.getter(c, y);
+        if (v === null || v === undefined) return null;  // si falta una pieza, no calculable
+        s += v; found++;
+      }
+      return found > 0 ? s : null;
+    };
+    const N = sumOf(state.ratio.num);
+    const D_ = sumOf(state.ratio.den);
+    if (N === null || D_ === null) return null;
+    let r;
+    if (state.ratio.op === '÷') {
+      if (D_ === 0) return null;
+      r = N / D_;
+    } else {
+      r = N * D_;
+    }
+    if (state.ratio.scale && state.ratio.scale !== 1) r *= state.ratio.scale;
+    return r;
+  }
+
+  function renderRatioBuilder() {
+    const numItems = state.ratio.num.map((r, i) => renderRatioItem(r, 'num', i)).join('') || '';
+    const denItems = state.ratio.den.map((r, i) => renderRatioItem(r, 'den', i)).join('') || '';
+    return `<div class="ratio-builder">
+      <h4>Constructor de ratio</h4>
+      <div class="ratio-formula">
+        <div class="ratio-slot num ${state.ratio.num.length?'has-items':''}">
+          <div class="slot-label">Numerador</div>
+          <div class="slot-items">${numItems}</div>
+          <button class="add-metric-btn" data-add-ratio="num">+ Añadir partida</button>
+        </div>
+        <div class="ratio-op">
+          <div class="op-toggle" id="opToggle">
+            <button class="${state.ratio.op==='÷'?'active':''}" data-op="÷" title="Dividir">÷</button>
+            <button class="${state.ratio.op==='×'?'active':''}" data-op="×" title="Multiplicar">×</button>
+          </div>
+        </div>
+        <div class="ratio-slot den ${state.ratio.den.length?'has-items':''}">
+          <div class="slot-label">${state.ratio.op === '÷' ? 'Denominador' : '× Multiplicador'}</div>
+          <div class="slot-items">${denItems}</div>
+          <button class="add-metric-btn" data-add-ratio="den">+ Añadir partida</button>
+        </div>
+      </div>
+      <div class="ratio-options">
+        <label><input type="checkbox" id="ratioScale" ${state.ratio.scale===100?'checked':''}> Multiplicar por 100 (porcentaje)</label>
+        <input class="name-input" id="ratioName" placeholder="Nombre del ratio (auto si vacío)" value="${(state.ratio.name||'').replace(/"/g,'&quot;')}">
+      </div>
+    </div>`;
+  }
+
+  function renderSimplePicker() {
+    const sel = findMetric(state.metric.cat, state.metric.sub, state.metric.id) ||
+                findMetric('pyg', 'nv', 'nv:PT8') ||
+                (() => {
+                  const c = Object.keys(METRIC_TREE)[0];
+                  const s = Object.keys(METRIC_TREE[c].sub)[0];
+                  const m = METRIC_TREE[c].sub[s].metrics[0];
+                  return findMetric(c, s, m.id);
+                })();
+    state.metric = { cat: sel.catId, sub: sel.subId, id: sel.met.id };
+
+    const cat = METRIC_TREE[state.metric.cat];
+    const sub = cat.sub[state.metric.sub];
+
+    const breadcrumb = `
+      <span class="crumb">${cat.label}</span>
+      <span class="crumb-sep">›</span>
+      <span class="crumb">${sub.label}</span>
+      <span class="crumb-sep">›</span>
+      <span class="leaf">${sel.met.label}</span>`;
+
+    return `<div class="metric-bar">
+      <div class="label">Métrica</div>
+      <div class="metric-picker ${state.metricPickerOpen && state.pickerTarget==='simple' ? 'open' : ''}" id="metricPicker">
+        <button class="metric-picker-button" id="metricPickerBtn">
+          <span class="path">${breadcrumb}</span>
+          <span class="caret">▾</span>
+        </button>
+      </div>
+    </div>`;
+  }
+
+  function renderEvolucion() {
+    if (state.selected.length === 0)
+      return emptyState('Elige entidades para ver evolución temporal.');
+
+    let chartHead = '';
+    let unidad = '';
+    if (state.mode === 'simple') {
+      const sel = findMetric(state.metric.cat, state.metric.sub, state.metric.id);
+      const cat = METRIC_TREE[state.metric.cat];
+      const sub = cat.sub[state.metric.sub];
+      const fmtSpec = FMT[sel.met.fmt];
+      unidad = fmtSpec.unidad;
+      chartHead = `<div>
+        <h3>${sel.met.label}</h3>
+        <div style="font-size:11.5px;color:var(--ink-mute);margin-top:2px">
+          ${cat.label} · ${sub.label}${sel.met.pt ? ` · ${sel.met.pt}` : ''}
+        </div>
+      </div>
+      <div class="meta">Evolución ${YEARS[0]}–${YEARS[YEARS.length-1]}<br>Unidad: ${fmtSpec.unidad}</div>`;
+    } else {
+      const ratioName = autoRatioName();
+      unidad = state.ratio.scale === 100 ? '%' : (state.ratio.op === '÷' ? 'ratio' : '€');
+      chartHead = `<div>
+        <h3 style="font-style:italic;color:var(--accent)">${ratioName}</h3>
+        <div style="font-size:11.5px;color:var(--ink-mute);margin-top:2px">
+          Ratio personalizado · ${state.ratio.num.length} partida(s) ${state.ratio.op} ${state.ratio.den.length} partida(s)${state.ratio.scale===100 ? ' × 100' : ''}
+        </div>
+      </div>
+      <div class="meta">Evolución ${YEARS[0]}–${YEARS[YEARS.length-1]}<br>Unidad: ${unidad}</div>`;
+    }
+
+    return `${renderModeToggle()}
+      ${state.mode === 'simple' ? renderSimplePicker() : renderRatioBuilder()}
+      <div class="chart-hero">
+        <div class="head">${chartHead}</div>
+        <div class="canvas-wrap"><canvas id="ch-hero"></canvas></div>
+      </div>
+      ${renderPickerModal()}`;
+  }
+
+  // Modal picker — reutiliza el árbol jerárquico, válido tanto para modo simple como ratio
+  function renderPickerModal() {
+    if (!state.metricPickerOpen) return '';
+    const cat = METRIC_TREE[state.metric.cat];
+    const sub = cat.sub[state.metric.sub];
+    const q = state.metricSearch.trim().toLowerCase();
+    const filtered = q
+      ? sub.metrics.filter(m => m.label.toLowerCase().includes(q) || (m.pt && m.pt.toLowerCase().includes(q)))
+      : sub.metrics;
+    const l1 = Object.entries(METRIC_TREE).map(([k, v]) =>
+      `<div class="metric-opt ${k === state.metric.cat ? 'active' : ''}" data-l1="${k}">
+        <span>${v.label}</span><span class="arrow">›</span>
+      </div>`).join('');
+    const l2 = Object.entries(cat.sub).map(([k, v]) =>
+      `<div class="metric-opt ${k === state.metric.sub ? 'active' : ''}" data-l2="${k}">
+        <span>${v.label} <span style="color:var(--ink-mute);font-size:10px">· ${v.metrics.length}</span></span>
+        <span class="arrow">›</span>
+      </div>`).join('');
+    const l3 = filtered.map(m => {
+      const isActive = state.pickerTarget === 'simple' && m.id === state.metric.id;
+      return `<div class="metric-opt leaf ${isActive?'active':''}" data-l3="${m.id}">
+        <span style="line-height:1.3">${m.label}</span>${m.pt ? `<span class="pt-tag">${m.pt}</span>` : ''}
+      </div>`;
+    }).join('') || `<div style="padding:14px;color:var(--ink-mute);font-size:12px;font-style:italic">Sin coincidencias</div>`;
+    const titleMap = {
+      'simple': 'Seleccionar métrica',
+      'ratio_num': 'Añadir partida al numerador',
+      'ratio_den': state.ratio.op === '÷' ? 'Añadir partida al denominador' : 'Añadir multiplicador',
+    };
+    return `<div class="picker-overlay" id="pickerOverlay">
+      <div class="picker-modal">
+        <div class="picker-modal-head">
+          <h4>${titleMap[state.pickerTarget] || 'Seleccionar métrica'}</h4>
+          <button class="close-x" id="pickerCloseBtn" title="Cerrar">×</button>
+        </div>
+        <div class="picker-modal-body">
+          <div class="metric-col" id="col-l1">
+            <div class="metric-col-header">Categoría</div>
+            ${l1}
+          </div>
+          <div class="metric-col" id="col-l2">
+            <div class="metric-col-header">Subcategoría</div>
+            ${l2}
+          </div>
+          <div class="metric-col" id="col-l3">
+            <div class="metric-col-header">
+              <input id="metricSearch" placeholder="Filtrar ${sub.metrics.length} métricas…"
+                value="${state.metricSearch.replace(/"/g,'&quot;')}"
+                style="width:100%;background:transparent;border:0;outline:none;font:inherit;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;padding:0">
+            </div>
+            ${l3}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Listener delegado (registrado una vez en init)
+  function attachMetricPickerHandlers() {
+    document.addEventListener('click', (e) => {
+      // Mode toggle
+      const mt = e.target.closest('#modeToggle button[data-mode]');
+      if (mt) {
+        state.mode = mt.dataset.mode;
+        renderContent();
+        return;
+      }
+      // Operador del ratio
+      const opBtn = e.target.closest('#opToggle button[data-op]');
+      if (opBtn) {
+        state.ratio.op = opBtn.dataset.op;
+        renderContent();
+        return;
+      }
+      // Quitar partida del ratio
+      const rmRatio = e.target.closest('[data-rm-ratio]');
+      if (rmRatio) {
+        const slot = rmRatio.dataset.rmRatio;
+        const idx = parseInt(rmRatio.dataset.idx);
+        state.ratio[slot].splice(idx, 1);
+        renderContent();
+        return;
+      }
+      // Añadir partida al ratio (abre modal)
+      const addRatio = e.target.closest('[data-add-ratio]');
+      if (addRatio) {
+        state.pickerTarget = addRatio.dataset.addRatio === 'num' ? 'ratio_num' : 'ratio_den';
+        state.metricPickerOpen = true;
+        state.metricSearch = '';
+        renderContent();
+        return;
+      }
+      // Botón del picker en modo simple
+      const btn = e.target.closest('#metricPickerBtn');
+      if (btn) {
+        state.pickerTarget = 'simple';
+        state.metricPickerOpen = true;
+        state.metricSearch = '';
+        renderContent();
+        return;
+      }
+      // Cerrar modal: close-x o click sobre overlay (fuera del modal)
+      const closeBtn = e.target.closest('#pickerCloseBtn');
+      const overlay = e.target.closest('#pickerOverlay');
+      const modalClick = e.target.closest('.picker-modal');
+      if (closeBtn || (overlay && !modalClick)) {
+        state.metricPickerOpen = false;
+        renderContent();
+        return;
+      }
+      // Navegación del árbol
+      const opt1 = e.target.closest('[data-l1]');
+      if (opt1) {
+        const k = opt1.dataset.l1;
+        if (k !== state.metric.cat) {
+          state.metric.cat = k;
+          const firstSub = Object.keys(METRIC_TREE[k].sub)[0];
+          state.metric.sub = firstSub;
+          if (state.pickerTarget === 'simple')
+            state.metric.id = METRIC_TREE[k].sub[firstSub].metrics[0].id;
+          state.metricSearch = '';
+          renderContent();
+        }
+        return;
+      }
+      const opt2 = e.target.closest('[data-l2]');
+      if (opt2) {
+        const k = opt2.dataset.l2;
+        if (k !== state.metric.sub) {
+          state.metric.sub = k;
+          if (state.pickerTarget === 'simple')
+            state.metric.id = METRIC_TREE[state.metric.cat].sub[k].metrics[0].id;
+          state.metricSearch = '';
+          renderContent();
+        }
+        return;
+      }
+      const opt3 = e.target.closest('[data-l3]');
+      if (opt3) {
+        const id = opt3.dataset.l3;
+        const ref = { cat: state.metric.cat, sub: state.metric.sub, id };
+        if (state.pickerTarget === 'simple') {
+          state.metric = ref;
+        } else if (state.pickerTarget === 'ratio_num') {
+          state.ratio.num.push(ref);
+        } else if (state.pickerTarget === 'ratio_den') {
+          state.ratio.den.push(ref);
+        }
+        state.metricPickerOpen = false;
+        state.metricSearch = '';
+        renderContent();
+        return;
+      }
+    });
+    // Inputs delegados (search + checkbox + nombre del ratio)
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'metricSearch') {
+        state.metricSearch = e.target.value;
+        const col3 = document.getElementById('col-l3');
+        if (!col3) return;
+        const cat = METRIC_TREE[state.metric.cat];
+        const sub = cat.sub[state.metric.sub];
+        const q = state.metricSearch.trim().toLowerCase();
+        const filtered = q
+          ? sub.metrics.filter(m => m.label.toLowerCase().includes(q) || (m.pt && m.pt.toLowerCase().includes(q)))
+          : sub.metrics;
+        const isSimple = state.pickerTarget === 'simple';
+        const l3 = filtered.map(m =>
+          `<div class="metric-opt leaf ${isSimple && m.id === state.metric.id?'active':''}" data-l3="${m.id}">
+            <span style="line-height:1.3">${m.label}</span>${m.pt ? `<span class="pt-tag">${m.pt}</span>` : ''}
+          </div>`).join('') || `<div style="padding:14px;color:var(--ink-mute);font-size:12px;font-style:italic">Sin coincidencias</div>`;
+        while (col3.children.length > 1) col3.removeChild(col3.lastChild);
+        col3.insertAdjacentHTML('beforeend', l3);
+      }
+      if (e.target && e.target.id === 'ratioName') {
+        state.ratio.name = e.target.value;
+      }
+    });
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'ratioScale') {
+        state.ratio.scale = e.target.checked ? 100 : 1;
+        renderContent();
+      }
+    });
+  }
+
+  function buildChart(canvasId, fn, opts={}) {
+    const el = document.getElementById(canvasId);
+    if (!el) return;
+    // Destruir chart previo en este canvas si existe
+    const existing = Chart.getChart && Chart.getChart(el);
+    if (existing) existing.destroy();
+    const datasets = state.selected.map((c, i) => {
+      const e = ENT_BY_CLAVE[c];
+      const isAgg = e && e.isAggregate;
+      const data = YEARS.map(y => {
+        const v = fn(c, y);
+        return (v === undefined || v === null) ? null : v;
+      });
+      const color = PALETTE[i % PALETTE.length];
+      return {
+        label: (isAgg ? 'Σ ' : '') + (e?.nombre || c),
+        data,
+        borderColor: color,
+        backgroundColor: color + '22',
+        borderWidth: isAgg ? 2.5 : 2,
+        borderDash: isAgg ? [4, 3] : [],   // línea discontinua para agregados
+        tension: 0.25,
+        spanGaps: true,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      };
+    });
+    new Chart(el, {
+      type: 'line',
+      data: { labels: YEARS, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, labels: { font: { family: 'Manrope', size: 11 }, boxWidth: 12 } },
+          tooltip: { callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              return `${ctx.dataset.label}: ${opts.fmt ? opts.fmt(v) : v}`;
+            }
+          }}
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'JetBrains Mono', size: 11 } } },
+          y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'JetBrains Mono', size: 11 }, callback: v => opts.fmtAxis ? opts.fmtAxis(v) : v } },
+        },
+      }
+    });
+  }
+
+  function renderContent() {
+    if (state.tab === 'resumen') $content.innerHTML = renderResumen();
+    else if (state.tab === 'balance') $content.innerHTML = renderBalance();
+    else if (state.tab === 'pyg') $content.innerHTML = renderPyG();
+    else if (state.tab === 'solvencia') $content.innerHTML = renderSolvencia();
+    else if (state.tab === 'plantilla') $content.innerHTML = renderPlantilla();
+    else if (state.tab === 'evolucion') {
+      $content.innerHTML = renderEvolucion();
+      if (state.selected.length === 0) return;
+      if (state.mode === 'simple') {
+        const sel = findMetric(state.metric.cat, state.metric.sub, state.metric.id);
+        if (!sel) return;
+        const fmtSpec = FMT[sel.met.fmt];
+        buildChart('ch-hero', sel.met.getter, { fmt: fmtSpec.fmt, fmtAxis: fmtSpec.axis });
+      } else {
+        // Modo ratio
+        if (state.ratio.num.length === 0 || state.ratio.den.length === 0) return;
+        const isPct = state.ratio.scale === 100;
+        const isMultiply = state.ratio.op === '×';
+        const fmt = isPct
+          ? v => v.toLocaleString('es-ES',{maximumFractionDigits:2}) + '%'
+          : (isMultiply
+              ? v => fmtMoney(v)
+              : v => v.toLocaleString('es-ES',{maximumFractionDigits:3}));
+        const fmtAxis = isPct
+          ? v => v.toFixed(0) + '%'
+          : (isMultiply
+              ? v => Math.abs(v) >= 1e6 ? (v/1e6).toFixed(0)+'M' : (v/1e3).toFixed(0)+'k'
+              : v => v.toFixed(2));
+        buildChart('ch-hero', computeRatioValue, { fmt, fmtAxis });
+      }
+    }
+  }
+
+  function rerender() {
+    renderAggregates();
+    renderEntList();
+    renderPills();
+    renderContent();
+  }
+
+  // INIT
+  renderYears();
+  attachMetricPickerHandlers();
+  rerender();
+})();
+</script>
+</body>
+</html>

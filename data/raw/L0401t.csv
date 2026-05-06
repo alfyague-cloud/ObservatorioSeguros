@@ -1,0 +1,63 @@
+DESCRIPCION;COL1;ORDEN
+I.  Primas Imputadas al Ejercicio, Netas de Reaseguro          ;;1
+     1. Primas devengadas     ;;2
+          1.1. Seguro directo;PT1;3
+          1.2. Reaseguro aceptado;PT2;4
+          1.3. Variación de la corrección por deterioro de las primas pendientes de cobro (+ ó -);PT3;5
+     2. Primas del reaseguro cedido (-)     ;PT4;6
+     3. Variación de la provisión para primas no consumidas y para riesgos en curso(+ ó -)     ;;7
+          3.1. Seguro directo;PT5;8
+          3.2. Reaseguro aceptado;PT6;9
+     4. Variación de la provisión para primas no consumidas, reaseguro cedido (+ ó -)     ;PT7;10
+     TOTAL PRIMAS IMPUTADAS NETAS DE REASEGURO     ;PT8;11
+II. Ingresos del inmovilizado material y de las inversiones           ;;12
+     1. Ingresos procedentes de las inversiones inmobiliarias     ;PT9;13
+     2. Ingresos procedentes de inversiones financieras     ;PT50;14
+     3. Aplicaciones de correcciones de valor por deterioro del inmovilizado material y de las inversiones      ;;15
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT13;16
+          3.2. De inversiones financieras;PT14;17
+     4. Beneficios en realización del inmovilizado material y de las inversiones      ;;18
+          4.1. Del inmovilizado material y de las inversiones inmobiliarias;PT15;19
+          4.2. De inversiones financieras;PT16;20
+     TOTAL INGRESOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT17;21
+III. Otros Ingresos Técnicos          ;PT18;22
+IV.  Siniestralidad del Ejercicio, Neta de Reaseguro          ;;23
+     1. Prestaciones y gastos pagados     ;;24
+          1.1. Seguro directo;PT19;25
+          1.2. Reaseguro aceptado;PT20;26
+          1.3. Reaseguro cedido (-);PT21;27
+     2. Variación de la provisión para prestaciones (+ ó -)     ;;28
+          2.1. Seguro directo;PT22;29
+          2.2. Reaseguro aceptado;PT23;30
+          2.3. Reaseguro cedido (-);PT24;31
+     3. Gastos imputables a prestaciones     ;PT25;32
+     TOTAL SINIESTRALIDAD NETA DE REASEGURO     ;PT26;33
+V.   Variación de otras Provisiones Técnicas, Netas de Reaseguro (+ ó -)          ;PT27;34
+VI . Participación en Beneficios y Extornos          ;;35
+     1. Prestaciones y gastos por participación en beneficios y extornos.     ;PT28;36
+     2. Variación de la provisión para participación en beneficios y extornos (+ ó -)     ;PT29;37
+     TOTAL PARTICIPACIÓN EN BENEFICIOS Y EXTORNOS     ;PT30;38
+VII. Gastos de Explotación Netos          ;;39
+     1. Gastos de adquisición      ;PT31;40
+     2. Gastos de administración     ;PT32;41
+     3. Comisiones y participaciones en el reaseguro cedido y retrocedido (-)     ;PT33;42
+     TOTAL GASTOS DE EXPLOTACIÓN NETOS     ;PT34;43
+VIII. Otros Gastos Técnicos (+ ó -)          ;;44
+     1. Variación del deterioro por insolvencias (+ ó -)     ;PT36;45
+     2. Variación del deterioro del inmovilizado (+ ó -)     ;PT37;46
+     3. Variación de prestaciones por convenios de liquidación de siniestros (+ ó -)     ;PT38;47
+     4. Otros     ;PT39;48
+     TOTAL OTROS GASTOS TÉCNICOS     ;PT40;49
+IX . Gastos del inmovilizado material y de las inversiones          ;;50
+     1. Gastos de gestión de las inversiones     ;;51
+          1.1 Gastos del inmovilizado material y de las inversiones inmobiliarias;PT42;52
+          1.2. Gastos de inversiones y cuentas financieras;PT41;53
+     2. Correcciones de valor del inmovilizado material y de las inversiones      ;;54
+          2.1. Amortización del inmovilizado material y de las inversiones inmobiliarias;PT43;55
+          2.2. Deterioro del inmovilizado material y de las inversiones inmobiliarias;PT44;56
+          2.3. Deterioro de inversiones financieras;PT45;57
+     3. Pérdidas procedentes del inmovilizado material y de las inversiones     ;;58
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT46;59
+          3.2. De las inversiones financieras;PT47;60
+     TOTAL GASTOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT48;61
+RESULTADO DE LA CUENTA TÉCNICA DEL SEGURO NO VIDA (I+II+III-IV-V-VI-VII-VIII-IX);PT49;62

@@ -1,0 +1,71 @@
+DESCRIPCION;COL1;ORDEN
+I.  Primas Imputadas al Ejercicio, Netas de Reaseguro          ;;1
+     1. Primas devengadas     ;;2
+          1.1. Seguro directo;PT1;3
+          1.2. Reaseguro aceptado;PT2;4
+          1.3. Variación de la corrección por deterioro de las primas pendientes de cobro (+ -);PT3;5
+     2. Primas del reaseguro cedido (-)     ;PT4;6
+     3. Variación de la provisión para primas no consumidas y para riesgos en curso(+ ó -)     ;;7
+          3.1. Seguro directo;PT5;8
+          3.2. Reaseguro aceptado;PT6;9
+     4. Variación de la provisión para primas no consumidas, reaseguro cedido (+ ó -)     ;PT7;10
+     TOTAL PRIMAS IMPUTADAS NETAS DE REASEGURO     ;PT8;11
+II. Ingresos del inmovilizado material y de las inversiones           ;;12
+     1. Ingresos procedentes de las inversiones inmobiliarias     ;PT9;13
+     2. Ingresos procedentes de inversiones financieras     ;PT56;14
+     3. Aplicaciones de correcciones de valor por deterioro del inmovilizado material y de las inversiones      ;;15
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT13;16
+          3.2. De inversiones financieras;PT14;17
+     4. Beneficios en realización del inmovilizado material y de las inversiones      ;;18
+          4.1. Del inmovilizado material y de las inversiones inmobiliarias;PT15;19
+          4.2. De inversiones financieras;PT16;20
+     TOTAL INGRESOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT17;21
+III. Ingresos de inversiones afectas a seguros en los que el tomador asume el riesgo de la inversión          ;PT57;22
+IV. Otros Ingresos Técnicos          ;PT19;23
+V.  Siniestralidad del Ejercicio, Neta de Reaseguro          ;;24
+     1. Prestaciones y gastos pagados     ;;25
+          1.1. Seguro directo;PT20;26
+          1.2. Reaseguro aceptado;PT21;27
+          1.3. Reaseguro cedido (-);PT22;28
+     2. Variación de la provisión para prestaciones (+ ó -)     ;;29
+          2.1. Seguro directo;PT23;30
+          2.2. Reaseguro aceptado;PT24;31
+          2.3. Reaseguro cedido (-);PT25;32
+     3. Gastos imputables a prestaciones     ;PT26;33
+     TOTAL SINIESTRALIDAD NETA DE REASEGURO     ;PT27;34
+VI.   Variación de Otras Provisiones Técnicas, Netas de Reaseguro (+ ó -)          ;;35
+     1. Provisiones para seguros de vida     ;;36
+          1.1. Seguro directo;PT28;37
+          1.2. Reaseguro aceptado;PT29;38
+          1.3. Reaseguro cedido (-);PT30;39
+     2. Provisiones para seguros de vida cuando el riesgo de inversión lo asuman los tomadores de seguros     ;PT31;40
+     3. Otras provisiones técnicas     ;PT55;41
+     TOTAL VARIACIÓN DE OTRAS PROVISIONES TÉCNICAS NETAS DE REASEGURO     ;PT32;42
+VII . Participación en Beneficios y Extornos          ;;43
+     1. Prestaciones y gastos por participación en beneficios y extornos     ;PT33;44
+     2. Variación de la provisión para participación en beneficios y extornos (+ ó -)     ;PT34;45
+     TOTAL PARTICIPACIÓN EN BENEFICIOS Y EXTORNOS     ;PT35;46
+VIII. Gastos de Explotación Netos          ;;47
+     1. Gastos de adquisición      ;PT36;48
+     2. Gastos de administración      ;PT38;49
+     3. Comisiones y participaciones en el reaseguro cedido y retrocedido (-)     ;PT39;50
+     TOTAL GASTOS DE EXPLOTACIÓN NETOS     ;PT40;51
+IX. Otros Gastos Técnicos (+ ó -)          ;;52
+     1. Variación del deterioro por insolvencias (+ ó -)     ;PT41;53
+     2. Variación del deterioro del inmovilizado (+ ó -)     ;PT42;54
+     3. Otros     ;PT43;55
+     TOTAL OTROS GASTOS TÉCNICOS     ;PT44;56
+X . Gastos del inmovilizado material y de las inversiones          ;;57
+     1. Gastos de gestión del inmovilizado material y de las inversiones     ;;58
+          1.1 Gastos del inmovilizado material y de las inversiones inmobiliarias;PT46;59
+          1.2. Gastos de inversiones y cuentas financieras;PT45;60
+     2. Correcciones de valor del inmovilizado material y de las inversiones      ;;61
+          2.1. Amortización del inmovilizado material y de las inversiones inmobiliarias;PT47;62
+          2.2. Deterioro del inmovilizado material y de las inversiones inmobiliarias;PT48;63
+          2.3. Deterioro de inversiones financieras;PT49;64
+     3. Pérdidas procedentes del inmovilizado material y de las inversiones     ;;65
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT50;66
+          3.2. De las inversiones financieras;PT51;67
+     TOTAL GASTOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT52;68
+XI. Gastos de inversiones afectas a seguros en los que el tomador asume el riesgo de la inversión          ;PT58;69
+RESULTADO DE LA CUENTA TÉCNICA DEL SEGURO DE VIDA (I+II+III+IV-V-VI-VII-VIII-IX-X-XI);PT54;70

@@ -1,0 +1,39 @@
+DESCRIPCION;COL1;ORDEN
+A.   Resultado de la cuenta técnica del seguro no vida          ;PT1;1
+B.  Resultado de la cuenta técnica del seguro de vida          ;PT2;2
+I. Ingresos del inmovilizado material y de las inversiones           ;;3
+     1. Ingresos procedentes de las inversiones inmobiliarias     ;PT3;4
+     2. Ingresos procedentes de las inversiones financieras     ;PT26;5
+     3. Aplicaciones de correcciones de valor por deterioro del inmovilizado material y de las inversiones      ;;6
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT7;7
+          3.2. De inversiones financieras;PT8;8
+     4. Beneficios en realización del inmovilizado material y de las inversiones      ;;9
+          4.1. Del inmovilizado material y de las inversiones inmobiliarias;PT9;10
+          4.2. De inversiones financieras;PT10;11
+     TOTAL INGRESOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT11;12
+II . Gastos del inmovilizado material y de las inversiones          ;;13
+     1. Gastos de gestión de las inversiones     ;;14
+          1.1 Gastos de inversiones y cuentas financieras;PT12;15
+          1.2. Gastos de inversiones materiales;PT13;16
+     2. Correcciones de valor del inmovilizado material y de las inversiones      ;;17
+          2.1. Amortización del inmovilizado material y de las inversiones inmobiliarias;PT14;18
+          2.2. Deterioro del inmovilizado material y de las inversiones inmobiliarias;PT15;19
+          2.3. Deterioro de inversiones financieras;PT16;20
+     3. Pérdidas procedentes del inmovilizado material y de las inversiones     ;;21
+          3.1. Del inmovilizado material y de las inversiones inmobiliarias;PT17;22
+          3.2. De las inversiones financieras;PT18;23
+     TOTAL GASTOS DEL INMOVILIZADO MATERIAL Y DE LAS INVERSIONES     ;PT19;24
+III. Otros ingresos          ;;25
+     1. Ingresos por la administración de fondos de pensiones     ;PT27;26
+     2. Resto de ingresos     ;PT28;27
+     TOTAL OTROS INGRESOS     ;PT20;28
+IV. Otros gastos          ;;29
+     1. Gastos por la administración de fondos de pensiones     ;PT29;30
+     2. Resto de gastos     ;PT30;31
+     TOTAL OTROS GASTOS     ;PT21;32
+V.    Subtotal (resultado de la cuenta no técnica) (I - II  + III - IV)          ;PT31;33
+VI.  Resultado antes de impuestos (A + B + V)          ;PT32;34
+VII. Impuesto sobre beneficios          ;PT24;35
+VIII.   Resultado procedente de operaciones continuadas (VI + VII)          ;PT33;36
+IX.    Resultado procedente de operaciones interrumpidas neto de impuestos (+ /-)          ;PT34;37
+X.   RESULTADO DEL EJERCICIO (VIII + IX);PT25;38

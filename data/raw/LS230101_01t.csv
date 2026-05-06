@@ -1,0 +1,9 @@
+DESCRIPCION;total;Nivel 1 No restringido;Nivel 1 Restringido;Nivel 2;Nivel 3;ORDEN
+Total de fondos propios disponibles para cubrir el CSO;R0500C0010;R0500C0020;R0500C0030;R0500C0040;R0500C0050;1
+Total de fondos propios disponibles para cubrir el CMO;R0510C0010;R0510C0020;R0510C0030;R0510C0040;;2
+Total de fondos propios admisibles para cubrir el CSO;R0540C0010;R0540C0020;R0540C0030;R0540C0040;R0540C0050;3
+Total de fondos propios admisibles para cubrir el CMO;R0550C0010;R0550C0020;R0550C0030;R0550C0040;;4
+CSO;R0580C0010;;;;;5
+CMO;R0600C0010;;;;;6
+Ratio Fondos propios admisibles sobre CSO;R0620C0010;;;;;7
+Ratio Fondos propios admisibles sobre CMO;R0640C0010;;;;;8

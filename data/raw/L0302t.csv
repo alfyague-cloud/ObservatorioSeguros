@@ -1,0 +1,73 @@
+DESCRIPCION;COL1;ORDEN
+A-1) Pasivos financieros mantenidos para negociar;PT1;1
+A-2) Otros pasivos financieros a valor razonable con cambios en pérdidas y ganancias;PT2;2
+A-3) Débitos y partidas a pagar;PT3;3
+     I.   Pasivos subordinados;PT4;4
+     II.  Depósitos recibidos por reaseguro cedido;PT5;5
+     III. Deudas por operaciones de seguro;PT6;6
+          1. Deudas con asegurados;PT7;7
+          2. Deudas con mediadores;PT8;8
+          3. Deudas condicionadas;PT9;9
+     IV. Deudas por operaciones de reaseguro;PT10;10
+     V.  Deudas por operaciones de coaseguro;PT11;11
+     VI.  Obligaciones y otros valores negociables;PT12;12
+     VII. Deudas con entidades de crédito;PT13;13
+     VIII. Deudas por operaciones preparatorias de contratos de seguro;PT14;14
+     IX.   Otras deudas:;PT15;15
+          1. Deudas con las Administraciones públicas;PT16;16
+          2. Otras deudas con entidades del grupo y asociadas;PT17;17
+          3. Resto de otras deudas;PT18;18
+A-4) Derivados de cobertura;PT19;19
+A-5) Provisiones técnicas;PT20;20
+     I. Provisión para primas no consumidas;PT21;21
+     II. Provisión para riesgos en curso;PT22;22
+     III. Provisión de seguros de vida;PT23;23
+          1. Provisión para primas no consumidas;PT24;24
+          2. Provisión para riesgos en curso;PT25;25
+          3. Provisión matemática;PT26;26
+          4. Provisión de seguros de vida cuando el riesgo de la inversión lo asume el tomador;PT27;27
+     IV. Provisión para prestaciones;PT28;28
+     V.  Provisión para participación en beneficios y para extornos;PT29;29
+     VI. Otras provisiones técnicas;PT30;30
+A-6) Provisiones no técnicas;PT31;31
+     I.  Provisiones para impuestos y otras contingencias legales;PT32;32
+     II. Provisión para pensiones y obligaciones similares;PT33;33
+     III. Provisión para pagos por convenios de liquidación;PT34;34
+     IV. Otras provisiones no técnicas;PT35;35
+A-7) Pasivos fiscales;PT36;36
+     I.   Pasivos por impuesto corriente;PT37;37
+     II.  Pasivos por impuesto diferido;PT38;38
+A-8) Resto de pasivos;PT39;39
+     I.   Periodificaciones;PT40;40
+     II. Pasivos por asimetrías contables;PT41;41
+     III. Comisiones y otros costes de adquisición del reaseguro cedido;PT42;42
+     IV.  Otros pasivos;PT43;43
+A-9) Pasivos vinculados con activos mantenidos para la venta;PT44;44
+TOTAL PASIVO;PT45;45
+ PATRIMONIO NETO;;46
+B-1) Fondos propios;PT46;47
+      I. Capital o fondo mutual;PT47;48
+          1. Capital escriturado o fondo mutual;PT48;49
+          2. (Capital no exigido);PT49;50
+     II.   Prima de emisión;PT50;51
+     III.  Reservas;PT51;52
+          1. Legal y estatutarias;PT52;53
+          2. Reserva de estabilización;PT53;54
+          3. Otras reservas;PT54;55
+     IV.  (Acciones propias);PT55;56
+     V.   Resultados de ejercicios anteriores;PT56;57
+          1. Remanente;PT57;58
+          2. (Resultados negativos de ejercicios anteriores);PT58;59
+     VI.  Otras aportaciones de socios y mutualistas;PT59;60
+     VII. Resultado del ejercicio;PT60;61
+     VIII. (Dividendo a cuenta y reserva de estabilización a cuenta);PT61;62
+     IX.  Otros instrumentos de patrimonio neto;PT62;63
+B-2)  Ajustes por cambios de valor: ;PT63;64
+     I.    Activos financieros disponibles para la venta;PT64;65
+     II.   Operaciones de cobertura;PT65;66
+     III.  Diferencias de cambio y conversión;PT66;67
+     IV.  Corrección de asimetrías contables;PT67;68
+     V.  Otros ajustes;PT68;69
+B-3)  Subvenciones, donaciones y legados recibidos;PT69;70
+TOTAL PATRIMONIO NETO;PT70;71
+TOTAL PASIVO Y PATRIMONIO NETO;PT71;72

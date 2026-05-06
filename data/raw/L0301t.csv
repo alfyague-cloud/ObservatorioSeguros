@@ -1,0 +1,63 @@
+DESCRIPCION;COL1;ORDEN
+A-1) Efectivo y otros activos líquidos equivalentes;PT1;1
+A-2) Activos financieros mantenidos para negociar;PT2;2
+     I.  Instrumentos de patrimonio;PT3;3
+     II.  Valores representativos de deuda;PT4;4
+     III. Derivados;PT5;5
+IV. Otros;PT6;6
+A-3) Otros activos financieros a valor razonable con cambios en pérdidas y ganancias;PT7;7
+     I.  Instrumentos de patrimonio;PT8;8
+     II.  Valores representativos de deuda;PT9;9
+     III. Instrumentos híbridos;PT10;10
+     IV. Inversiones por cuenta de los tomadores de seguros de vida que asuman el riesgo de la inversión;PT11;11
+     V. Otros;PT12;12
+A-4) Activos financieros disponibles para la venta;PT13;13
+     I.  Instrumentos de patrimonio;PT14;14
+     II.  Valores representativos de deuda;PT15;15
+     III. Inversiones por cuenta de los tomadores de seguros de vida que asuman el riesgo de la inversión;PT16;16
+IV. Otros;PT17;17
+A-5) Préstamos y partidas a cobrar;PT18;18
+     I.   Valores representativos de deuda;PT19;19
+     II.  Préstamos;PT20;20
+        1. Anticipos sobre pólizas;PT21;21
+        2. Préstamos a entidades del grupo y asociadas;PT22;22
+        3. Préstamos a otras partes vinculadas;PT23;23
+     III. Depósitos en entidades de crédito;PT24;24
+     IV. Depósitos constituidos por reaseguro aceptado;PT25;25
+     V. Créditos por operaciones de seguro directo;PT26;26
+        1. Tomadores de seguro;PT27;27
+        2. Mediadores;PT28;28
+     VI. Créditos por operaciones de reaseguro;PT29;29
+     VII. Créditos por operaciones de coaseguro;PT30;30
+     VIII. Desembolsos exigidos;PT31;31
+     IX.   Otros créditos;PT32;32
+        1. Créditos con las Administraciones Públicas;PT33;33
+        2. Resto de créditos;PT34;34
+A-6) Inversiones mantenidas hasta el vencimiento;PT35;35
+A-7) Derivados de cobertura;PT36;36
+A-8) Participación del reaseguro en las provisiones técnicas;PT37;37
+     I.   Provisión para primas no consumidas;PT38;38
+     II.  Provisión de seguros de vida;PT39;39
+     III. Provisión para prestaciones;PT40;40
+     IV. Otras provisiones técnicas;PT41;41
+A-9) Inmovilizado material e inversiones inmobiliarias;PT42;42
+     I.  Inmovilizado material;PT43;43
+     II. Inversiones inmobiliarias;PT44;44
+A-10) Inmovilizado intangible;PT45;45
+     I.  Fondo de comercio;PT46;46
+     II. Derechos económicos derivados de carteras de pólizas adquiridas a mediadores;PT47;47
+     III. Otro activo intangible;PT48;48
+A-11) Participaciones en entidades del grupo y asociadas;PT49;49
+     I.  Participaciones en empresas asociadas;PT50;50
+     II. Participaciones en empresas multigrupo;PT51;51
+     III.  Participaciones en empresas del grupo;PT52;52
+A-12) Activos fiscales ;PT53;53
+     I. Activos por impuesto corriente;PT54;54
+     II. Activos por impuesto diferido;PT55;55
+A-13) Otros activos;PT56;56
+     I.  Activos y derechos de reembolso por retribuciones a largo plazo al personal;PT57;57
+     II. Comisiones anticipadas y otros costes de adquisición;PT58;58
+     III.Periodificaciones;PT59;59
+     IV.Resto de activos;PT60;60
+A-14) Activos mantenidos para venta;PT61;61
+TOTAL ACTIVO;PT62;62
