@@ -1916,13 +1916,16 @@
   }
 
   function computeRatioValue(c, y) {
+    // Suma partidas: trata partidas ausentes como 0 (caso típico: aseguradora mono-ramo
+    // que no opera en Vida o No Vida y por tanto no tiene esa Cuenta Técnica).
+    // Solo devuelve null si NINGUNA pieza está disponible.
     const sumOf = (arr) => {
       let s = 0, found = 0;
       for (const ref of arr) {
         const sel = resolveMetric(ref);
         if (!sel) continue;
         const v = sel.met.getter(c, y);
-        if (v === null || v === undefined) return null;  // si falta una pieza, no calculable
+        if (v === null || v === undefined) continue;  // partida ausente = 0
         s += v; found++;
       }
       return found > 0 ? s : null;
