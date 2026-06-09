@@ -14,7 +14,6 @@ Una vez desplegado en GitHub Pages, accesible en `https://USUARIO.github.io/REPO
 - **Agregados sectoriales** como entidades virtuales: SECTOR (todas), Sociedades anónimas, Mutuas, Mutualidades. Los ratios CSO/CMO se recalculan correctamente como `Σ FP / Σ Capital`.
 - **Constructor de ratios personalizados** en Evolución: cualquier partida (de balance, PyG o solvencia) ÷ ó × cualquier otra, opcional ×100 para porcentaje.
 - Indicadores delta YoY, gauges SVG, gráficos Chart.js.
-- Logo Afi via CDN.
 
 ## Stack
 
@@ -94,7 +93,7 @@ Casi toda la apariencia vive en variables CSS al inicio de `index.html`:
 
 ```css
 :root {
-  --primary: #0a2a52;   /* navy Afi */
+  --primary: #0a2a52;   /* navy */
   --accent:  #0891b2;   /* teal */
   --gold:    #d97706;   /* highlights / agregados */
   ...
@@ -111,4 +110,4 @@ Datos públicos de la **Dirección General de Seguros y Fondos de Pensiones** (D
 
 Apache License 2.0 — ver [LICENSE](./LICENSE) y [NOTICE](./NOTICE).
 
-Antes de hacer público el repo, edita `NOTICE` y pon el titular del copyright (Afi, tu nombre, etc.).
+Antes de hacer público el repo, edita `NOTICE` y pon el titular del copyright.

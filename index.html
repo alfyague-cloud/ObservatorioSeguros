@@ -70,29 +70,13 @@
     display: flex; align-items: center; gap: 10px;
     margin-bottom: 8px;
   }
-  .brand .afi-logo {
-    height: 26px;
-    width: auto;
-    display: block;
-  }
-  .brand .afi-text {
-    font-family: 'Fraunces', serif;
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--primary);
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .brand .divider {
-    width: 1px; height: 22px; background: var(--rule);
-  }
   .brand .product {
     font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: 16px;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-    line-height: 1;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--primary);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
   }
   .brand .tag {
     margin-top: 2px;
@@ -1061,16 +1045,225 @@
     font-size: 22px;
     color: var(--accent);
   }
+
+  /* ===========================================================
+     MOBILE / RESPONSIVE
+     - Hamburguesa visible bajo 900px
+     - Sidebar como drawer deslizable
+     - Apilado de grids 2-col, scroll horizontal en tabs/años
+     - Reducción de paddings y tipografías en pantallas pequeñas
+     =========================================================== */
+
+  /* Botón hamburguesa: oculto por defecto, visible en móvil */
+  .menu-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 6px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .menu-toggle:hover { background: var(--bg-2); }
+
+  /* Backdrop oscuro detrás del drawer */
+  .drawer-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 42, 82, 0.45);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  body.drawer-open .drawer-backdrop {
+    display: block;
+    opacity: 1;
+  }
+  body.drawer-open { overflow: hidden; }
+
+  /* === Tablet (hasta 1100px): main ya pone chart-grid a 1 col === */
+
+  /* === Móvil grande / tablet pequeña (≤ 900px) === */
+  @media (max-width: 900px) {
+    .app {
+      grid-template-columns: 1fr;
+    }
+
+    .menu-toggle {
+      display: inline-flex;
+    }
+
+    /* Sidebar se convierte en drawer */
+    aside {
+      position: fixed;
+      top: 0; left: 0;
+      width: min(320px, 86vw);
+      height: 100vh;
+      z-index: 999;
+      transform: translateX(-100%);
+      transition: transform .28s cubic-bezier(.4,0,.2,1);
+      box-shadow: 4px 0 24px rgba(0,0,0,.18);
+      overflow-y: auto;
+    }
+    body.drawer-open aside {
+      transform: translateX(0);
+    }
+
+    /* Topbar: hamburguesa + título */
+    .topbar {
+      gap: 10px;
+      align-items: flex-start;
+      padding: 14px 16px !important;
+      flex-wrap: wrap;
+    }
+    .topbar-title { flex: 1 1 auto; min-width: 0; }
+    .headline { font-size: 22px !important; line-height: 1.15; }
+    .headline-sub { font-size: 12px !important; }
+
+    /* Selector de año: scroll horizontal */
+    .year-control {
+      width: 100%;
+      margin-top: 4px;
+    }
+    .year-control label { font-size: 11px; }
+    .year-pill-group {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      flex-wrap: nowrap !important;
+      scrollbar-width: thin;
+      padding-bottom: 4px;
+    }
+    .year-pill-group::-webkit-scrollbar { height: 4px; }
+    .year-pill-group::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+    .year-pill-group button {
+      flex-shrink: 0;
+    }
+
+    /* Tabs: scroll horizontal */
+    .tabs {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      flex-wrap: nowrap;
+      scrollbar-width: none;
+      padding: 0 12px;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs .tab {
+      flex-shrink: 0;
+      padding: 12px 14px !important;
+      font-size: 13px !important;
+    }
+
+    /* Contenido principal: menos padding */
+    main > .content {
+      padding: 14px 14px 80px !important;
+    }
+    .footer-note { padding: 14px 16px !important; font-size: 11px; }
+
+    /* Grids de 2 columnas → 1 columna */
+    .agg-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* KPI rows / cards en una columna */
+    .kpi-grid,
+    .kpi-row-grid,
+    [class*="grid-template-columns"] {
+      /* fallback genérico controlado por reglas específicas abajo */
+    }
+
+    /* Constructor de ratio: ya cae a 1 col en 760px, refinamos paddings */
+    .ratio-builder { padding: 14px !important; }
+    .ratio-slot { padding: 12px !important; }
+    .ratio-op { padding: 8px 0 !important; }
+
+    /* Picker modal de métricas: full screen en móvil */
+    .picker-overlay .picker-modal,
+    .modal .panel,
+    [class*="picker"][class*="modal"] {
+      width: 96vw !important;
+      max-width: 96vw !important;
+      max-height: 90vh !important;
+    }
+    /* Selector jerárquico de partidas: apilar las 3 columnas */
+    [style*="grid-template-columns: 200px 240px 1fr"],
+    .metric-picker-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Tablas: scroll horizontal contenedor */
+    .content table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    /* Charts: altura más controlada */
+    canvas { max-height: 320px !important; }
+
+    /* Pills compactas */
+    .pills .pill { font-size: 12px; }
+  }
+
+  /* === Móvil pequeño (≤ 480px) === */
+  @media (max-width: 480px) {
+    .headline { font-size: 19px !important; }
+    .headline-sub { font-size: 11px !important; }
+
+    main > .content {
+      padding: 10px 10px 80px !important;
+    }
+
+    /* Agregados sectoriales a 1 columna en pantallas muy estrechas */
+    .agg-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* KPIs: 1 columna estricta */
+    .kpi-grid,
+    div[class*="kpi"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Cards más compactas */
+    .card { padding: 14px !important; }
+    .card h3, .card .h3 { font-size: 15px !important; }
+
+    /* Brand más pequeño */
+    .brand { padding: 14px 16px 10px !important; }
+
+    /* Tabs aún más compactas */
+    .tabs .tab {
+      padding: 10px 12px !important;
+      font-size: 12px !important;
+    }
+
+    /* Año pill más compacto */
+    .year-pill-group button {
+      padding: 4px 9px !important;
+      font-size: 12px !important;
+    }
+  }
+
+  /* === Móvil orientación landscape (alto bajo) === */
+  @media (max-height: 500px) and (orientation: landscape) {
+    aside { height: 100vh; }
+    .brand { padding: 10px 16px !important; }
+  }
 </style>
 </head>
 <body>
+<div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
 <div class="app">
   <aside>
     <div class="brand">
       <div class="logo-row">
-        <img class="afi-logo" src="https://cdn.prod.website-files.com/67174dcb1d43b06a0eae317e/672bbbc7a2b88045e5661994_logo-afi.svg"
-             alt="Afi" onerror="this.outerHTML='<span class=&quot;afi-text&quot;>Afi</span>'">
-        <span class="divider"></span>
         <span class="product">Observatorio Seguros</span>
       </div>
       <div class="tag">Libro de Balances · DGSFP</div>
@@ -1095,7 +1288,14 @@
 
   <main>
     <div class="topbar">
-      <div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú lateral" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="7"  x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+      <div class="topbar-title">
         <div class="headline">Análisis <span class="accent">comparado</span> de aseguradoras</div>
         <div class="headline-sub">241 entidades · ejercicios 2016–2024</div>
       </div>
@@ -1305,7 +1505,7 @@
     if (r >= 1.0) return 'warn';
     return 'bad';
   }
-  // Color palette for series (multiple companies) — afi-leaning, distinct
+  // Color palette for series (multiple companies) — corporate navy palette, distinct
   const PALETTE = ['#0a2a52','#0891b2','#d97706','#7c2d12','#15803d','#7e22ce','#be123c','#365314'];
 
   // ---------- SPARKLINE & DELTA ----------
@@ -2326,6 +2526,55 @@
   renderYears();
   attachMetricPickerHandlers();
   rerender();
+
+  // ---------- MOBILE DRAWER ----------
+  // Sidebar como cajón lateral en móvil (≤ 900px).
+  // Hamburguesa abre/cierra; backdrop, Escape o click en pill de entidad lo cierran.
+  (function setupDrawer() {
+    const body = document.body;
+    const toggle = document.getElementById('menuToggle');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const aside = document.querySelector('aside');
+    if (!toggle || !aside) return;
+
+    const open = () => {
+      body.classList.add('drawer-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+      body.classList.remove('drawer-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      body.classList.contains('drawer-open') ? close() : open();
+    });
+    backdrop.addEventListener('click', close);
+
+    // Cerrar al pulsar Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && body.classList.contains('drawer-open')) close();
+    });
+
+    // Cerrar tras interactuar con la sidebar en móvil (seleccionar entidad,
+    // agregado o buscar): el usuario querrá ver el resultado en el main.
+    aside.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      // Cierra si clic en un item de lista, pill o agregado.
+      const target = e.target.closest('[data-ent], [data-agg], .ent-row, .pill, .agg-card');
+      if (target) {
+        // Pequeño delay para permitir que el evento original (selección) se complete
+        setTimeout(close, 180);
+      }
+    });
+
+    // Si se redimensiona a desktop, asegura estado limpio.
+    window.addEventListener('resize', () => {
+      if (!isMobile()) close();
+    });
+  })();
 })();
 </script>
 </body>
