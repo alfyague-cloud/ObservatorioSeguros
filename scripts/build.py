@@ -148,14 +148,25 @@ for r in try_read('D0104T.csv'):
 
 
 # ---- BALANCE (vectores completos) ----------------------------------------
+DELEG_ESPANA = '724'
+
 def load_balance(fname, pts):
+    # Algunas entidades declaran una fila por delegación (724 = España y,
+    # p. ej., 20 = sucursal de Andorra). Se toma siempre la fila de España;
+    # las demás solo si la entidad no tiene fila 724 ese año. Así el
+    # resultado no depende del orden de las filas en el CSV.
     by = defaultdict(dict)
+    is_es = defaultdict(dict)
     for r in try_read(fname):
         clave = r['CLAVE'].strip(); y = yr(r['TRIMESTRE'])
         if not clave or not y: continue
+        ystr = str(y)
+        es = (r.get('delegacion') or '').strip() in ('', DELEG_ESPANA)
+        if is_es[clave].get(ystr) and not es: continue
         vec = [to_num(r.get(pt)) for pt in pts]
         if any(v is not None for v in vec):
-            by[clave][str(y)] = vec
+            by[clave][ystr] = vec
+            is_es[clave][ystr] = es
     return by
 
 act = load_balance('D0301T.csv', PTS_ACT)
