@@ -8,7 +8,7 @@ Una vez desplegado en GitHub Pages, accesible en `https://USUARIO.github.io/REPO
 
 ## Características
 
-- **241 entidades** aseguradoras desde 2016 hasta 2024.
+- **241 entidades** aseguradoras desde 2016 hasta 2025.
 - **Vista 360º**: Resumen, Balance, PyG, Solvencia, Plantilla, Evolución temporal.
 - Comparación simultánea de hasta **6 entidades** con código de color y sparklines de tendencia.
 - **Agregados sectoriales** como entidades virtuales: SECTOR (todas), Sociedades anónimas, Mutuas, Mutualidades. Los ratios CSO/CMO se recalculan correctamente como `Σ FP / Σ Capital`.
